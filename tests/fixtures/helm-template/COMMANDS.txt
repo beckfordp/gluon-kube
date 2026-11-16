@@ -1,0 +1,10 @@
+helm template cart-service infra/k8s/gluon --namespace gluon-local -f environments/local/cart-service.values.yaml
+helm template catalog-service infra/k8s/gluon --namespace gluon-local -f environments/local/catalog-service.values.yaml
+helm template fulfilment-service infra/k8s/gluon --namespace gluon-local -f environments/local/fulfilment-service.values.yaml
+helm template inventory-service infra/k8s/gluon --namespace gluon-local -f environments/local/inventory-service.values.yaml
+helm template notification-service infra/k8s/gluon --namespace gluon-local -f environments/local/notification-service.values.yaml
+helm template order-service infra/k8s/gluon --namespace gluon-local -f environments/local/order-service.values.yaml
+helm template payment-service infra/k8s/gluon --namespace gluon-local -f environments/local/payment-service.values.yaml
+helm template user-service infra/k8s/gluon --namespace gluon-local -f environments/local/user-service-rs.values.yaml
+helm template user-service infra/k8s/gluon --namespace gluon-local -f environments/local/user-service.values.yaml
+helm template example infra/k8s/gluon --namespace gluon-local

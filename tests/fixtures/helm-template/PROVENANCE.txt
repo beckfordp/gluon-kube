@@ -1,0 +1,8 @@
+captured: 2026-11-16T13:05:29Z by tools/gluon-kube/scripts/capture-laptop-reference.sh
+gluon commit: 68f8255648869e3730ff08d6151a0a61e826c6ad
+gluon dirty files: 2
+helm: v3.18.2+g04cad46
+kubectl: Client Version: v1.33.1
+kubectl context: orbstack
+docker server: 29.8.2
+os: Darwin arm64
