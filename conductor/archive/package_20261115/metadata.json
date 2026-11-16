@@ -1,0 +1,8 @@
+{
+  "track_id": "package_20261115",
+  "type": "chore",
+  "status": "completed",
+  "created_at": "2026-11-15T09:40:00Z",
+  "updated_at": "2026-11-15T09:50:00Z",
+  "description": "GK-2: tools/gluon-kube as a Python package (uv, pyproject, gluon-kube CLI skeleton), CI (scripts/ci.sh, GitHub Actions), and its place in gluon's sandbox scripts (gluon ADR 0030 decision 6)"
+}

@@ -1,0 +1,8 @@
+{
+  "track_id": "netns-probe_20261115",
+  "type": "spike",
+  "status": "completed",
+  "created_at": "2026-11-15T08:40:00Z",
+  "updated_at": "2026-11-15T10:35:00Z",
+  "description": "GK-1 feasibility probe: per-pod network and mount namespaces, a userspace Service proxy and per-pod /etc/hosts, unprivileged in the sandbox (gluon ADR 0030 decision 3)"
+}

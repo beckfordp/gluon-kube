@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: MIT
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    # Linux only: gluon-kube runs workloads in unprivileged Linux namespaces.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Ubuntu 24.04 restricts unprivileged user namespaces through AppArmor, and
+      # the integration tests create them (from GK-4). The runner has sudo.
+      # Unverified until the repo is first pushed (gluon plan GK-2.6).
+      - name: Allow unprivileged user namespaces
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+          sudo apt-get install -y --no-install-recommends bubblewrap
+
+      # uv installs the Python pinned in .python-version and the dependencies
+      # locked in uv.lock. Same uv as gluon-contract's.
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.10"
+          enable-cache: true
+
+      # The same script the sandbox runs, so the two can't drift.
+      - name: CI checks
+        run: scripts/ci.sh
