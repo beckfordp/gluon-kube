@@ -1,8 +1,8 @@
 {
   "track_id": "manifests_20261115",
   "type": "feature",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-11-15T10:35:00Z",
-  "updated_at": "2026-11-15T10:35:00Z",
+  "updated_at": "2026-11-18T14:00:00Z",
   "description": "GK-3: read gluon-local's desired state exactly: typed model of the simulated kinds, a loader that accounts for every field, Helm values merging, the chart's Go-template subset, gluon-kube template and apply --dry-run (gluon ADR 0030 decisions 2 and 5)"
 }

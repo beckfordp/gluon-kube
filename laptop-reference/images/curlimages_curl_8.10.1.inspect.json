@@ -1,0 +1,63 @@
+[
+    {
+        "Id": "sha256:d9b4541e214bcd85196d6e92e2753ac6d0ea699f0af5741f8c6cccbfcf00ef4b",
+        "RepoTags": [
+            "curlimages/curl:8.10.1"
+        ],
+        "RepoDigests": [
+            "curlimages/curl@sha256:d9b4541e214bcd85196d6e92e2753ac6d0ea699f0af5741f8c6cccbfcf00ef4b"
+        ],
+        "Comment": "FROM localhost/curl-base-linux-arm64:8.10.1",
+        "Created": "2024-09-18T07:38:16.562217651Z",
+        "Config": {
+            "User": "curl_user",
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "CURL_CA_BUNDLE=/cacert.pem"
+            ],
+            "Entrypoint": [
+                "/entrypoint.sh"
+            ],
+            "Cmd": [
+                "curl"
+            ],
+            "WorkingDir": "/home/curl_user",
+            "Labels": {
+                "docker.cmd": "podman run -it quay.io/curl/:8.10.1",
+                "io.buildah.version": "1.23.1",
+                "maintainer": "James Fuller <jim.fuller@webcomposite.com>",
+                "name": "curl-linux-arm64:8.10.1",
+                "org.opencontainers.image.description": "minimal image for curl",
+                "org.opencontainers.image.licenses": "MIT",
+                "org.opencontainers.image.source": "https://github.com/curl/curl-container",
+                "version": "8.10.1"
+            }
+        },
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 36339780,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:16113d51b7181f20135f51e8ffbaead20a7671cd783017601f198748ce8a8ebf",
+                "sha256:47f6e51fe7e6535e5a49f0109f9ec2ba288f9e89b30ae542c7590df19cb9e21e",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-15T19:40:27.200929979Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.list.v2+json",
+            "digest": "sha256:d9b4541e214bcd85196d6e92e2753ac6d0ea699f0af5741f8c6cccbfcf00ef4b",
+            "size": 953
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/curlimages/curl"
+                }
+            ]
+        }
+    }
+]

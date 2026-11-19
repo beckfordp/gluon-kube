@@ -1,0 +1,79 @@
+[
+    {
+        "Id": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+        "RepoTags": [
+            "apache/kafka:3.8.0"
+        ],
+        "RepoDigests": [
+            "apache/kafka@sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2024-07-23T09:01:41.928351182Z",
+        "Config": {
+            "User": "appuser",
+            "ExposedPorts": {
+                "9092/tcp": {}
+            },
+            "Env": [
+                "PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "JAVA_HOME=/opt/java/openjdk",
+                "LANG=en_US.UTF-8",
+                "LANGUAGE=en_US:en",
+                "LC_ALL=en_US.UTF-8",
+                "JAVA_VERSION=jdk-21.0.4+7"
+            ],
+            "Entrypoint": [
+                "/__cacert_entrypoint.sh"
+            ],
+            "Cmd": [
+                "/etc/kafka/docker/run"
+            ],
+            "Volumes": {
+                "/etc/kafka/secrets": {},
+                "/mnt/shared/config": {},
+                "/var/lib/kafka/data": {}
+            },
+            "Labels": {
+                "maintainer": "Apache Kafka",
+                "org.label-schema.build-date": "2024-07-23",
+                "org.label-schema.description": "Apache Kafka",
+                "org.label-schema.name": "kafka",
+                "org.label-schema.vcs-url": "https://github.com/apache/kafka"
+            },
+            "ArgsEscaped": true
+        },
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 599099070,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:9110f7b5208f035f4d4f99b5169338169e1df9bb2519d1b047f50f54430bacc2",
+                "sha256:1de83650e9386e839be4c15c93a233e55bcfb4ddba24b34e8a7fe3863bf523af",
+                "sha256:66d26858d9c5f80ea70caebe5539a4dd378bfb85339c4714238f1a793a8dd1b0",
+                "sha256:d25bdf6e02d437d9a95d2ab6d6e81942f6783c001a7511e2c264baeb124a5c55",
+                "sha256:cf7b28399283dcea2af66c8ba382bcada7a21429bd889cfec4cd169c7eb501b2",
+                "sha256:dab6bb087bec31e9f38f37b51bc4a46ee58c1c889a82f42d55d16e30aafc9a4c",
+                "sha256:8369414ac456e1b866e23c33f201d01bbfc159cfd39dbc73486b184b505e5bd6",
+                "sha256:091c8ac94fe275dfc9b59a69f0c594431f8daa5eb23831c6c83bb494f16531ed",
+                "sha256:ba8d7fa6812003539f0d7751847f1f082cf327d00203842d4259b9609e0a1e36",
+                "sha256:b869cd0096e5ac752249d1208a782cdb57b5448a1a489f5435debe4992b3fb5c"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-08T19:41:34.861171679Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+            "size": 1609
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/apache/kafka"
+                }
+            ]
+        }
+    }
+]

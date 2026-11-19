@@ -8,9 +8,9 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.13"
-# Pinned exactly, as gluon-contract's. pyroute2 (decided in GK-1.2) comes with the
-# first code that uses it (GK-4).
+# Pinned exactly, as gluon-contract's. pyroute2 (decided in GK-1.2): the node's netlink (GK-4).
 dependencies = [
+    "pyroute2==0.9.7",
     "pyyaml==6.0.3",
 ]
 
@@ -33,11 +33,15 @@ build-backend = "uv_build"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = ["--strict-markers", "--strict-config", "-ra"]
 
 [tool.coverage.run]
 source = ["gluon_kube"]
 branch = true
+# The node, its supervisor and helpers are subprocesses (in their own namespaces): measure
+# them too (coverage's subprocess patch; they exit normally on `cluster stop`).
+patch = ["subprocess"]
 
 [tool.coverage.report]
 fail_under = 80

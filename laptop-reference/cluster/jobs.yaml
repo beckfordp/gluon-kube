@@ -1,0 +1,1242 @@
+apiVersion: v1
+items:
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"batch/v1","kind":"Job","metadata":{"annotations":{},"labels":{"app":"debezium-connector-register"},"name":"debezium-connector-register","namespace":"gluon-local"},"spec":{"backoffLimit":6,"template":{"metadata":{"labels":{"app":"debezium-connector-register"}},"spec":{"containers":[{"command":["sh","-c","set -eu\necho \"Waiting for kafka-connect REST API...\"\nattempt=0\nmax_attempts=36 # 36 * 5s = 3m\nuntil curl --fail --silent http://kafka-connect:8083/ \u003e /dev/null; do\n  attempt=$((attempt + 1))\n  if [ \"$attempt\" -ge \"$max_attempts\" ]; then\n    echo \"FAIL: kafka-connect never became reachable after ${max_attempts} attempts\" \u003e\u00262\n    exit 1\n  fi\n  sleep 5\ndone\nfor f in /connectors/*.json; do\n  name=$(basename \"$f\" .json)\n  echo \"Registering $name...\"\n  # PUT .../connectors/{name}/config is idempotent (create\n  # or update) - unlike POST /connectors, which 409s if the\n  # connector already exists. Matters because this Job can\n  # retry (backoffLimit) or be re-applied.\n  curl --fail --silent --show-error \\\n    -X PUT \\\n    -H \"Content-Type: application/json\" \\\n    --data \"@$f\" \\\n    \"http://kafka-connect:8083/connectors/$name/config\"\n  echo\ndone\n\n# TD-22: inventory no longer publishes; remove its retired\n# connector from existing clusters. 404 means already gone.\necho \"Removing retired inventory-outbox-connector...\"\ncode=$(curl --silent --output /dev/null --write-out '%{http_code}' \\\n  -X DELETE \\\n  \"http://kafka-connect:8083/connectors/inventory-outbox-connector\")\nif [ \"$code\" != \"204\" ] \u0026\u0026 [ \"$code\" != \"404\" ]; then\n  echo \"FAIL: deleting inventory-outbox-connector returned $code\" \u003e\u00262\n  exit 1\nfi\n"],"image":"curlimages/curl:8.10.1","name":"register","resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}},"volumeMounts":[{"mountPath":"/connectors","name":"connectors"}]}],"restartPolicy":"OnFailure","volumes":[{"configMap":{"name":"debezium-outbox-connectors"},"name":"connectors"}]}}}}
+    creationTimestamp: "2026-11-14T18:45:53Z"
+    generation: 1
+    labels:
+      app: debezium-connector-register
+    name: debezium-connector-register
+    namespace: gluon-local
+    resourceVersion: "768143"
+    uid: 61f85cbe-b233-4eb1-9b49-e4864b4ed1f7
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 61f85cbe-b233-4eb1-9b49-e4864b4ed1f7
+    suspend: false
+    template:
+      metadata:
+        labels:
+          app: debezium-connector-register
+          batch.kubernetes.io/controller-uid: 61f85cbe-b233-4eb1-9b49-e4864b4ed1f7
+          batch.kubernetes.io/job-name: debezium-connector-register
+          controller-uid: 61f85cbe-b233-4eb1-9b49-e4864b4ed1f7
+          job-name: debezium-connector-register
+      spec:
+        containers:
+        - command:
+          - sh
+          - -c
+          - |
+            set -eu
+            echo "Waiting for kafka-connect REST API..."
+            attempt=0
+            max_attempts=36 # 36 * 5s = 3m
+            until curl --fail --silent http://kafka-connect:8083/ > /dev/null; do
+              attempt=$((attempt + 1))
+              if [ "$attempt" -ge "$max_attempts" ]; then
+                echo "FAIL: kafka-connect never became reachable after ${max_attempts} attempts" >&2
+                exit 1
+              fi
+              sleep 5
+            done
+            for f in /connectors/*.json; do
+              name=$(basename "$f" .json)
+              echo "Registering $name..."
+              # PUT .../connectors/{name}/config is idempotent (create
+              # or update) - unlike POST /connectors, which 409s if the
+              # connector already exists. Matters because this Job can
+              # retry (backoffLimit) or be re-applied.
+              curl --fail --silent --show-error \
+                -X PUT \
+                -H "Content-Type: application/json" \
+                --data "@$f" \
+                "http://kafka-connect:8083/connectors/$name/config"
+              echo
+            done
+
+            # TD-22: inventory no longer publishes; remove its retired
+            # connector from existing clusters. 404 means already gone.
+            echo "Removing retired inventory-outbox-connector..."
+            code=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+              -X DELETE \
+              "http://kafka-connect:8083/connectors/inventory-outbox-connector")
+            if [ "$code" != "204" ] && [ "$code" != "404" ]; then
+              echo "FAIL: deleting inventory-outbox-connector returned $code" >&2
+              exit 1
+            fi
+          image: curlimages/curl:8.10.1
+          imagePullPolicy: IfNotPresent
+          name: register
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /connectors
+            name: connectors
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: debezium-outbox-connectors
+          name: connectors
+  status:
+    completionTime: "2026-11-14T18:45:59Z"
+    conditions:
+    - lastProbeTime: "2026-11-14T18:45:59Z"
+      lastTransitionTime: "2026-11-14T18:45:59Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-14T18:45:59Z"
+      lastTransitionTime: "2026-11-14T18:45:59Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-14T18:45:53Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T11:00:00Z"
+    creationTimestamp: "2026-11-16T11:12:53Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: 772d38b8-5a76-4625-a524-922ef87e3d02
+      batch.kubernetes.io/job-name: fulfilment-outbox-cleanup-29913780
+      controller-uid: 772d38b8-5a76-4625-a524-922ef87e3d02
+      job-name: fulfilment-outbox-cleanup-29913780
+    name: fulfilment-outbox-cleanup-29913780
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: fulfilment-outbox-cleanup
+      uid: 55abde8d-8d04-43c0-809c-1d1ffa995b0d
+    resourceVersion: "799555"
+    uid: 772d38b8-5a76-4625-a524-922ef87e3d02
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 772d38b8-5a76-4625-a524-922ef87e3d02
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: 772d38b8-5a76-4625-a524-922ef87e3d02
+          batch.kubernetes.io/job-name: fulfilment-outbox-cleanup-29913780
+          controller-uid: 772d38b8-5a76-4625-a524-922ef87e3d02
+          job-name: fulfilment-outbox-cleanup-29913780
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - fulfilment-postgres
+          - -U
+          - fulfilment
+          - -d
+          - fulfilment
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: fulfilment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T11:14:00Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T11:14:00Z"
+      lastTransitionTime: "2026-11-16T11:14:00Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T11:14:00Z"
+      lastTransitionTime: "2026-11-16T11:14:00Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T11:12:53Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T12:00:00Z"
+    creationTimestamp: "2026-11-16T12:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: 0bca66ff-ff27-4703-bbe8-f52c28a949a7
+      batch.kubernetes.io/job-name: fulfilment-outbox-cleanup-29913840
+      controller-uid: 0bca66ff-ff27-4703-bbe8-f52c28a949a7
+      job-name: fulfilment-outbox-cleanup-29913840
+    name: fulfilment-outbox-cleanup-29913840
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: fulfilment-outbox-cleanup
+      uid: 55abde8d-8d04-43c0-809c-1d1ffa995b0d
+    resourceVersion: "800610"
+    uid: 0bca66ff-ff27-4703-bbe8-f52c28a949a7
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 0bca66ff-ff27-4703-bbe8-f52c28a949a7
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: 0bca66ff-ff27-4703-bbe8-f52c28a949a7
+          batch.kubernetes.io/job-name: fulfilment-outbox-cleanup-29913840
+          controller-uid: 0bca66ff-ff27-4703-bbe8-f52c28a949a7
+          job-name: fulfilment-outbox-cleanup-29913840
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - fulfilment-postgres
+          - -U
+          - fulfilment
+          - -d
+          - fulfilment
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: fulfilment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T12:00:05Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T12:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T13:00:00Z"
+    creationTimestamp: "2026-11-16T13:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: b9829ffb-96c7-45ab-957e-964097984abb
+      batch.kubernetes.io/job-name: fulfilment-outbox-cleanup-29913900
+      controller-uid: b9829ffb-96c7-45ab-957e-964097984abb
+      job-name: fulfilment-outbox-cleanup-29913900
+    name: fulfilment-outbox-cleanup-29913900
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: fulfilment-outbox-cleanup
+      uid: 55abde8d-8d04-43c0-809c-1d1ffa995b0d
+    resourceVersion: "802217"
+    uid: b9829ffb-96c7-45ab-957e-964097984abb
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: b9829ffb-96c7-45ab-957e-964097984abb
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: b9829ffb-96c7-45ab-957e-964097984abb
+          batch.kubernetes.io/job-name: fulfilment-outbox-cleanup-29913900
+          controller-uid: b9829ffb-96c7-45ab-957e-964097984abb
+          job-name: fulfilment-outbox-cleanup-29913900
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - fulfilment-postgres
+          - -U
+          - fulfilment
+          - -d
+          - fulfilment
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: fulfilment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T13:00:06Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T13:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T11:00:00Z"
+    creationTimestamp: "2026-11-16T11:12:53Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: 9b263e38-6ba7-4a8c-8136-c37eaec2dcd8
+      batch.kubernetes.io/job-name: order-outbox-cleanup-29913780
+      controller-uid: 9b263e38-6ba7-4a8c-8136-c37eaec2dcd8
+      job-name: order-outbox-cleanup-29913780
+    name: order-outbox-cleanup-29913780
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: order-outbox-cleanup
+      uid: 2d24ca6a-af3a-42e7-9097-5812d0503129
+    resourceVersion: "799574"
+    uid: 9b263e38-6ba7-4a8c-8136-c37eaec2dcd8
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 9b263e38-6ba7-4a8c-8136-c37eaec2dcd8
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: 9b263e38-6ba7-4a8c-8136-c37eaec2dcd8
+          batch.kubernetes.io/job-name: order-outbox-cleanup-29913780
+          controller-uid: 9b263e38-6ba7-4a8c-8136-c37eaec2dcd8
+          job-name: order-outbox-cleanup-29913780
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - order-postgres
+          - -U
+          - order
+          - -d
+          - order
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: order
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T11:14:00Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T11:14:00Z"
+      lastTransitionTime: "2026-11-16T11:14:00Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T11:14:00Z"
+      lastTransitionTime: "2026-11-16T11:14:00Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T11:12:53Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T12:00:00Z"
+    creationTimestamp: "2026-11-16T12:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: 37dd0688-1254-42b4-98e9-c1b5b673b745
+      batch.kubernetes.io/job-name: order-outbox-cleanup-29913840
+      controller-uid: 37dd0688-1254-42b4-98e9-c1b5b673b745
+      job-name: order-outbox-cleanup-29913840
+    name: order-outbox-cleanup-29913840
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: order-outbox-cleanup
+      uid: 2d24ca6a-af3a-42e7-9097-5812d0503129
+    resourceVersion: "800629"
+    uid: 37dd0688-1254-42b4-98e9-c1b5b673b745
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 37dd0688-1254-42b4-98e9-c1b5b673b745
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: 37dd0688-1254-42b4-98e9-c1b5b673b745
+          batch.kubernetes.io/job-name: order-outbox-cleanup-29913840
+          controller-uid: 37dd0688-1254-42b4-98e9-c1b5b673b745
+          job-name: order-outbox-cleanup-29913840
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - order-postgres
+          - -U
+          - order
+          - -d
+          - order
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: order
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T12:00:05Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T12:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T13:00:00Z"
+    creationTimestamp: "2026-11-16T13:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: a87944ba-b06a-4dcd-b266-d6710aba73e6
+      batch.kubernetes.io/job-name: order-outbox-cleanup-29913900
+      controller-uid: a87944ba-b06a-4dcd-b266-d6710aba73e6
+      job-name: order-outbox-cleanup-29913900
+    name: order-outbox-cleanup-29913900
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: order-outbox-cleanup
+      uid: 2d24ca6a-af3a-42e7-9097-5812d0503129
+    resourceVersion: "802235"
+    uid: a87944ba-b06a-4dcd-b266-d6710aba73e6
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: a87944ba-b06a-4dcd-b266-d6710aba73e6
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: a87944ba-b06a-4dcd-b266-d6710aba73e6
+          batch.kubernetes.io/job-name: order-outbox-cleanup-29913900
+          controller-uid: a87944ba-b06a-4dcd-b266-d6710aba73e6
+          job-name: order-outbox-cleanup-29913900
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - order-postgres
+          - -U
+          - order
+          - -d
+          - order
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: order
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T13:00:06Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T13:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T11:00:00Z"
+    creationTimestamp: "2026-11-16T11:12:53Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: a453c7d7-3654-4618-836f-f3b9f857e88c
+      batch.kubernetes.io/job-name: payment-outbox-cleanup-29913780
+      controller-uid: a453c7d7-3654-4618-836f-f3b9f857e88c
+      job-name: payment-outbox-cleanup-29913780
+    name: payment-outbox-cleanup-29913780
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: payment-outbox-cleanup
+      uid: 21033f4f-bc00-4909-bc04-151ae70a8745
+    resourceVersion: "799564"
+    uid: a453c7d7-3654-4618-836f-f3b9f857e88c
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: a453c7d7-3654-4618-836f-f3b9f857e88c
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: a453c7d7-3654-4618-836f-f3b9f857e88c
+          batch.kubernetes.io/job-name: payment-outbox-cleanup-29913780
+          controller-uid: a453c7d7-3654-4618-836f-f3b9f857e88c
+          job-name: payment-outbox-cleanup-29913780
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - payment-postgres
+          - -U
+          - payment
+          - -d
+          - payment
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: payment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T11:14:00Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T11:14:00Z"
+      lastTransitionTime: "2026-11-16T11:14:00Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T11:14:00Z"
+      lastTransitionTime: "2026-11-16T11:14:00Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T11:12:53Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T12:00:00Z"
+    creationTimestamp: "2026-11-16T12:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: 84dfbfa4-9f31-4f28-8826-894f7297c4a4
+      batch.kubernetes.io/job-name: payment-outbox-cleanup-29913840
+      controller-uid: 84dfbfa4-9f31-4f28-8826-894f7297c4a4
+      job-name: payment-outbox-cleanup-29913840
+    name: payment-outbox-cleanup-29913840
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: payment-outbox-cleanup
+      uid: 21033f4f-bc00-4909-bc04-151ae70a8745
+    resourceVersion: "800639"
+    uid: 84dfbfa4-9f31-4f28-8826-894f7297c4a4
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 84dfbfa4-9f31-4f28-8826-894f7297c4a4
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: 84dfbfa4-9f31-4f28-8826-894f7297c4a4
+          batch.kubernetes.io/job-name: payment-outbox-cleanup-29913840
+          controller-uid: 84dfbfa4-9f31-4f28-8826-894f7297c4a4
+          job-name: payment-outbox-cleanup-29913840
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - payment-postgres
+          - -U
+          - payment
+          - -d
+          - payment
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: payment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T12:00:05Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T12:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T13:00:00Z"
+    creationTimestamp: "2026-11-16T13:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: bda1bcec-1835-42ec-8455-aaa77cf62f47
+      batch.kubernetes.io/job-name: payment-outbox-cleanup-29913900
+      controller-uid: bda1bcec-1835-42ec-8455-aaa77cf62f47
+      job-name: payment-outbox-cleanup-29913900
+    name: payment-outbox-cleanup-29913900
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: payment-outbox-cleanup
+      uid: 21033f4f-bc00-4909-bc04-151ae70a8745
+    resourceVersion: "802227"
+    uid: bda1bcec-1835-42ec-8455-aaa77cf62f47
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: bda1bcec-1835-42ec-8455-aaa77cf62f47
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: bda1bcec-1835-42ec-8455-aaa77cf62f47
+          batch.kubernetes.io/job-name: payment-outbox-cleanup-29913900
+          controller-uid: bda1bcec-1835-42ec-8455-aaa77cf62f47
+          job-name: payment-outbox-cleanup-29913900
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - payment-postgres
+          - -U
+          - payment
+          - -d
+          - payment
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: payment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T13:00:06Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T13:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T11:00:00Z"
+    creationTimestamp: "2026-11-16T11:12:53Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: 53ce939f-7469-4302-ba11-f2e7f104b2f4
+      batch.kubernetes.io/job-name: user-outbox-cleanup-29913780
+      controller-uid: 53ce939f-7469-4302-ba11-f2e7f104b2f4
+      job-name: user-outbox-cleanup-29913780
+    name: user-outbox-cleanup-29913780
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: user-outbox-cleanup
+      uid: a9203870-b916-4977-adcf-59ed301d83ee
+    resourceVersion: "799590"
+    uid: 53ce939f-7469-4302-ba11-f2e7f104b2f4
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 53ce939f-7469-4302-ba11-f2e7f104b2f4
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: 53ce939f-7469-4302-ba11-f2e7f104b2f4
+          batch.kubernetes.io/job-name: user-outbox-cleanup-29913780
+          controller-uid: 53ce939f-7469-4302-ba11-f2e7f104b2f4
+          job-name: user-outbox-cleanup-29913780
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - user-postgres
+          - -U
+          - user
+          - -d
+          - user
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: user
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T11:14:02Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T11:14:02Z"
+      lastTransitionTime: "2026-11-16T11:14:02Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T11:14:02Z"
+      lastTransitionTime: "2026-11-16T11:14:02Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T11:12:53Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T12:00:00Z"
+    creationTimestamp: "2026-11-16T12:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: b323c67a-dd24-4dc2-8486-ef647eabcacc
+      batch.kubernetes.io/job-name: user-outbox-cleanup-29913840
+      controller-uid: b323c67a-dd24-4dc2-8486-ef647eabcacc
+      job-name: user-outbox-cleanup-29913840
+    name: user-outbox-cleanup-29913840
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: user-outbox-cleanup
+      uid: a9203870-b916-4977-adcf-59ed301d83ee
+    resourceVersion: "800618"
+    uid: b323c67a-dd24-4dc2-8486-ef647eabcacc
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: b323c67a-dd24-4dc2-8486-ef647eabcacc
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: b323c67a-dd24-4dc2-8486-ef647eabcacc
+          batch.kubernetes.io/job-name: user-outbox-cleanup-29913840
+          controller-uid: b323c67a-dd24-4dc2-8486-ef647eabcacc
+          job-name: user-outbox-cleanup-29913840
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - user-postgres
+          - -U
+          - user
+          - -d
+          - user
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: user
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T12:00:05Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T12:00:05Z"
+      lastTransitionTime: "2026-11-16T12:00:05Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T12:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    annotations:
+      batch.kubernetes.io/cronjob-scheduled-timestamp: "2026-11-16T13:00:00Z"
+    creationTimestamp: "2026-11-16T13:00:00Z"
+    generation: 1
+    labels:
+      batch.kubernetes.io/controller-uid: 05918924-16fb-4a45-9108-5c845edd4661
+      batch.kubernetes.io/job-name: user-outbox-cleanup-29913900
+      controller-uid: 05918924-16fb-4a45-9108-5c845edd4661
+      job-name: user-outbox-cleanup-29913900
+    name: user-outbox-cleanup-29913900
+    namespace: gluon-local
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: CronJob
+      name: user-outbox-cleanup
+      uid: a9203870-b916-4977-adcf-59ed301d83ee
+    resourceVersion: "802207"
+    uid: 05918924-16fb-4a45-9108-5c845edd4661
+  spec:
+    backoffLimit: 6
+    completionMode: NonIndexed
+    completions: 1
+    manualSelector: false
+    parallelism: 1
+    podReplacementPolicy: TerminatingOrFailed
+    selector:
+      matchLabels:
+        batch.kubernetes.io/controller-uid: 05918924-16fb-4a45-9108-5c845edd4661
+    suspend: false
+    template:
+      metadata:
+        labels:
+          batch.kubernetes.io/controller-uid: 05918924-16fb-4a45-9108-5c845edd4661
+          batch.kubernetes.io/job-name: user-outbox-cleanup-29913900
+          controller-uid: 05918924-16fb-4a45-9108-5c845edd4661
+          job-name: user-outbox-cleanup-29913900
+      spec:
+        containers:
+        - command:
+          - psql
+          - -h
+          - user-postgres
+          - -U
+          - user
+          - -d
+          - user
+          - -c
+          - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+          env:
+          - name: PGPASSWORD
+            value: user
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: cleanup
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: OnFailure
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2026-11-16T13:00:06Z"
+    conditions:
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: SuccessCriteriaMet
+    - lastProbeTime: "2026-11-16T13:00:06Z"
+      lastTransitionTime: "2026-11-16T13:00:06Z"
+      message: Reached expected number of succeeded pods
+      reason: CompletionsReached
+      status: "True"
+      type: Complete
+    ready: 0
+    startTime: "2026-11-16T13:00:00Z"
+    succeeded: 1
+    terminating: 0
+    uncountedTerminatedPods: {}
+kind: List
+metadata:
+  resourceVersion: ""

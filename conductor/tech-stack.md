@@ -11,8 +11,7 @@ that first needs them, before any code depends on them.
   `uv_build`, `src/` layout, package `gluon_kube` (typed: `py.typed`)
   *(2026-11-15, GK-2.2)*
 - Console script `gluon-kube` (`gluon_kube.cli:main`; also `python -m
-  gluon_kube`). No commands until GK-3; no runtime dependencies until the
-  code that needs one (pyroute2, GK-4)
+  gluon_kube`). Runtime dependencies: pyyaml, pyroute2 (GK-4)
 
 ## Test stack (as gluon-contract's) *(2026-11-15, GK-2.2)*
 - **pytest 9.2.0** — `testpaths = ["tests"]`: `tests/unit/` (pure) and
@@ -52,16 +51,34 @@ Tool versions are pinned exactly in `pyproject.toml`; bump them deliberately.
 - Services: a userspace proxy in the node (no `iptables` in the image);
   ClusterIPs on the node's `lo` (this kernel has no `dummy` link type)
 
-## Reuse (**Open** until GK-4)
-- gluon-contract's process code (`postgres`, `kafka`, `cdc`, `supervisor`)
-  as a uv path dependency on `../../tests/contract` (ADR 0030 decision 7)
+## Reuse *(2026-11-18, GK-4.1: decided)*
+- Not gluon-contract's process code: recipes run the **images' own entrypoints**
+  (captured on the laptop, `laptop-reference/images/`, copied into
+  `src/gluon_kube/images/`) on the sandbox's binaries, which is closer to the images
+  than the harness's reimplementations and less code. No path dependency on
+  `../../tests/contract` (ADR 0030 decision 7's "reused at first" didn't apply).
+
+## Runtime *(2026-11-18, GK-4)*
+- The node: `python -m gluon_kube.node`, in-memory state, a Unix-socket JSON API; the
+  control loop every 0.2 s; the state directory `$GLUON_KUBE_STATE` or
+  `/tmp/gluon-kube-<uid>` (conductor/tracks/runtime_20261118/spec.md "Design")
+- pyroute2 0.9.7 is a runtime dependency (the node's netlink)
+- The supervisor (`python -m gluon_kube.supervisor`) is the node's parent outside its
+  namespaces: it starts the node and relays its egress (GK-5.3)
+- Coverage follows subprocesses (coverage's `patch = ["subprocess"]`): the node, the
+  supervisor and the netlink helper are measured by the integration tests
 
 ## Sandbox
 A tool added here that the sandbox doesn't already have is added to gluon
 `bin/sandbox-setup` in the same change.
 
 ## Layout *(2026-11-15, GK-2)*
-- `src/gluon_kube/` — the simulator: `cli` (the command) so far
+- `src/gluon_kube/` — the simulator: `cli` (the command); `model`, `manifests`, `report`
+  (reading manifests, GK-3.1/3.2/3.7); `values`, `template`, `chart` (Helm's values,
+  the Go-template subset, `helm template`'s output, GK-3.3–3.6) *(2026-11-18)*
+- `tests/fixtures/helm-template/` — the laptop's `helm template` captures (GK-3.5);
+  `laptop-reference/` — the laptop's image and cluster captures, read-only reference
+  for GK-4/GK-5 *(2026-11-18)*
 - `tests/unit/`, `tests/integration/`
 - `scripts/ci.sh`
 - `spikes/` — probes that decide a design; kept with their findings, not

@@ -1,0 +1,806 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    annotations:
+      endpoints.kubernetes.io/last-change-trigger-time: "2026-11-16T11:13:04Z"
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: alertmanager
+    namespace: gluon-local
+    resourceVersion: "799415"
+    uid: 26bc0604-fc40-4428-97fe-14d70bffd26a
+  subsets:
+  - addresses:
+    - ip: 192.168.194.61
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: alertmanager-56659b4d8d-rtpc2
+        namespace: gluon-local
+        uid: 486abdf0-8d44-4707-a1d9-dc10b88ddab4
+    ports:
+    - name: http
+      port: 9093
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-25T08:35:43Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: apicurio-registry
+    namespace: gluon-local
+    resourceVersion: "799243"
+    uid: c5e3490c-66e4-4c81-8eb5-34080e549746
+  subsets:
+  - addresses:
+    - ip: 192.168.194.60
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: apicurio-registry-65c778d967-5pjxq
+        namespace: gluon-local
+        uid: e1f519c9-d359-455d-a589-cdae48bc649b
+    ports:
+    - port: 8080
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-25T23:19:09Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: apicurio-registry-ui
+    namespace: gluon-local
+    resourceVersion: "799273"
+    uid: e4816e0d-6a31-4a8b-83fa-ab92cbeb6e8f
+  subsets:
+  - addresses:
+    - ip: 192.168.194.57
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: apicurio-registry-ui-745fb55f4f-nhfpg
+        namespace: gluon-local
+        uid: 28e162f1-ba6d-418c-aa08-8f7b84778bd6
+    ports:
+    - port: 8080
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: cadvisor
+    namespace: gluon-local
+    resourceVersion: "799377"
+    uid: 28660a30-18ed-45e4-9638-d91315b7cb56
+  subsets:
+  - addresses:
+    - ip: 192.168.194.55
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: cadvisor-p474p
+        namespace: gluon-local
+        uid: 2edd65db-bb5d-486b-918f-772d33949405
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: cart-redis
+    namespace: gluon-local
+    resourceVersion: "799339"
+    uid: 4393cfa3-c133-43b3-a024-2ecbc0d60357
+  subsets:
+  - addresses:
+    - ip: 192.168.194.62
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: cart-redis-67b75bcdb6-dprvz
+        namespace: gluon-local
+        uid: 7afbcc47-2024-4a05-a390-7ffbb1718d6f
+    ports:
+    - port: 6379
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:50:07Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: cart-service
+    namespace: gluon-local
+    resourceVersion: "799354"
+    uid: da9d353a-1873-4a0f-bfde-5b86687979e9
+  subsets:
+  - addresses:
+    - ip: 192.168.194.41
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: cart-service-6db4f4b7d7-l74kh
+        namespace: gluon-local
+        uid: 3de9a275-3666-4a7b-97e0-b669acb7564f
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: catalog-postgres
+    namespace: gluon-local
+    resourceVersion: "799287"
+    uid: a006a36c-d336-4a9e-bf2c-78a9b02c618c
+  subsets:
+  - addresses:
+    - ip: 192.168.194.50
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: catalog-postgres-5dc64f78f6-l8lbw
+        namespace: gluon-local
+        uid: d98ac394-07aa-40cb-9b2f-a4af60341996
+    ports:
+    - port: 5432
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: catalog-redis
+    namespace: gluon-local
+    resourceVersion: "799315"
+    uid: d33392ca-4b10-4537-bf02-51337a4c2d9a
+  subsets:
+  - addresses:
+    - ip: 192.168.194.58
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: catalog-redis-6c78d79d89-n4tmx
+        namespace: gluon-local
+        uid: 1e36bb2d-3d8d-48fd-a9fa-230b1146c271
+    ports:
+    - port: 6379
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:49:38Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: catalog-service
+    namespace: gluon-local
+    resourceVersion: "799304"
+    uid: 79a95e24-ffd4-4039-a229-493dd4ee77ed
+  subsets:
+  - addresses:
+    - ip: 192.168.194.40
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: catalog-service-749b5575cd-ctgpf
+        namespace: gluon-local
+        uid: 1e2b1504-1971-4ccc-850f-b282ab5c6639
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: elasticsearch
+    namespace: gluon-local
+    resourceVersion: "799257"
+    uid: 656a8e85-2ad7-4dcd-83c2-afe6f3c2c87a
+  subsets:
+  - addresses:
+    - ip: 192.168.194.52
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: elasticsearch-7fb545b478-b7dhl
+        namespace: gluon-local
+        uid: ffb23deb-7c10-4dc5-9989-7ff8cd703987
+    ports:
+    - name: http
+      port: 9200
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-28T14:29:37Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: fulfilment-postgres
+    namespace: gluon-local
+    resourceVersion: "799387"
+    uid: 7554e13a-e6e4-4446-9b98-b6a9ab4eacb0
+  subsets:
+  - addresses:
+    - ip: 192.168.194.24
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: fulfilment-postgres-955f9cfdc-6ftng
+        namespace: gluon-local
+        uid: 53b5234e-e3ac-40e9-b380-57f92eb214d9
+    ports:
+    - port: 5432
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-28T14:33:00Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: fulfilment-service
+    namespace: gluon-local
+    resourceVersion: "799396"
+    uid: 9dabceba-cb66-4508-b654-cc6e01bea81f
+  subsets:
+  - addresses:
+    - ip: 192.168.194.46
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: fulfilment-service-5c55785789-5qzg8
+        namespace: gluon-local
+        uid: b2f98fe9-a1d9-41d5-8044-9d182a2e98f9
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    annotations:
+      endpoints.kubernetes.io/last-change-trigger-time: "2026-11-16T11:13:04Z"
+    creationTimestamp: "2026-11-05T14:58:55Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+      gluon-obs/ui: grafana
+    name: grafana
+    namespace: gluon-local
+    resourceVersion: "799423"
+    uid: 0a5b3000-5746-4bd9-a825-3b926f4db3d4
+  subsets:
+  - addresses:
+    - ip: 192.168.194.26
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: grafana-64c5f878b7-q25pf
+        namespace: gluon-local
+        uid: d05d6cf7-0d7f-4c2e-87fb-a388763372bd
+    ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: inventory-postgres
+    namespace: gluon-local
+    resourceVersion: "799230"
+    uid: edd4d015-12d6-4cf8-8809-142868bcd3b6
+  subsets:
+  - addresses:
+    - ip: 192.168.194.23
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: inventory-postgres-57cc5b7489-5v722
+        namespace: gluon-local
+        uid: 051d336b-b235-444b-99a1-fe99a0b9eb69
+    ports:
+    - port: 5432
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:50:42Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: inventory-service
+    namespace: gluon-local
+    resourceVersion: "799227"
+    uid: 439e61f1-11db-48c5-8e6b-b6d160ac1195
+  subsets:
+  - addresses:
+    - ip: 192.168.194.30
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: inventory-service-55f746994-cg8bc
+        namespace: gluon-local
+        uid: dcedb25e-bf6d-4144-8e58-72898945025b
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:36Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: kafka
+    namespace: gluon-local
+    resourceVersion: "799249"
+    uid: d6633a24-d42c-4923-b19c-96d31f52dbb0
+  subsets:
+  - addresses:
+    - ip: 192.168.194.19
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: kafka-6fd47dbc4f-l5gmk
+        namespace: gluon-local
+        uid: 43b7bbb0-18cf-4227-b98e-d3ec3c8af3b6
+    ports:
+    - port: 9092
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-15T19:40:21Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: kafka-connect
+    namespace: gluon-local
+    resourceVersion: "799222"
+    uid: 74936600-beb1-41d3-a90a-90cdaae79d68
+  subsets:
+  - addresses:
+    - ip: 192.168.194.39
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: kafka-connect-7c58dd7cdd-9lml5
+        namespace: gluon-local
+        uid: f9f0a082-8009-4ee2-a321-0731d55a2d21
+    ports:
+    - name: jmx
+      port: 9404
+      protocol: TCP
+    - name: http
+      port: 8083
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: kafka-exporter
+    namespace: gluon-local
+    resourceVersion: "799297"
+    uid: cef3affe-c454-4e3c-8457-20fbd998ca25
+  subsets:
+  - addresses:
+    - ip: 192.168.194.32
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: kafka-exporter-7df55697fc-h7nqv
+        namespace: gluon-local
+        uid: e41a4600-04af-43d6-a6ce-f967de8e78f8
+    ports:
+    - name: http
+      port: 9308
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-05T14:57:49Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+      gluon-obs/ui: kibana
+    name: kibana
+    namespace: gluon-local
+    resourceVersion: "799322"
+    uid: 3ad42910-1fb8-493f-a117-9dd1b4b71c79
+  subsets:
+  - addresses:
+    - ip: 192.168.194.28
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: kibana-6d54668976-k5rm2
+        namespace: gluon-local
+        uid: d79e218d-4023-41b4-9165-6d024a784e6e
+    ports:
+    - name: http
+      port: 5601
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: kube-state-metrics
+    namespace: gluon-local
+    resourceVersion: "799270"
+    uid: 0de4ec22-6df2-43b3-a1ac-622770885e26
+  subsets:
+  - addresses:
+    - ip: 192.168.194.49
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: kube-state-metrics-56787575cf-sbl5x
+        namespace: gluon-local
+        uid: 4ee8efa2-aa8d-489d-a6e2-998270b791c2
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-02T17:10:51Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: notification-postgres
+    namespace: gluon-local
+    resourceVersion: "799391"
+    uid: ab272a51-eb1c-4cce-8a32-4b8523ad059b
+  subsets:
+  - addresses:
+    - ip: 192.168.194.34
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: notification-postgres-5f9d96cbf6-xwd7t
+        namespace: gluon-local
+        uid: da914de6-469e-453f-a48d-2cc7a77eaa4f
+    ports:
+    - port: 5432
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:51:02Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: notification-service
+    namespace: gluon-local
+    resourceVersion: "799239"
+    uid: 4a5f7e94-1684-496c-a535-79c3b5b25179
+  subsets:
+  - addresses:
+    - ip: 192.168.194.35
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: notification-service-d489766d5-r6f7b
+        namespace: gluon-local
+        uid: ff6de004-02a5-489f-9c7c-0de8ab10498a
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: order-postgres
+    namespace: gluon-local
+    resourceVersion: "799370"
+    uid: 44c5f0e8-44ca-4df9-8ddb-82f81a3aae7e
+  subsets:
+  - addresses:
+    - ip: 192.168.194.54
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: order-postgres-5ccb7cf48f-rxxrp
+        namespace: gluon-local
+        uid: 8f7bf6fa-9088-41f2-acf8-9728ba71dc4f
+    ports:
+    - port: 5432
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: order-redis
+    namespace: gluon-local
+    resourceVersion: "799352"
+    uid: 4d0c6b3d-1439-4d78-8ed1-b0fe13f7d670
+  subsets:
+  - addresses:
+    - ip: 192.168.194.47
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: order-redis-654f8b74f6-9b96s
+        namespace: gluon-local
+        uid: 67d217b0-097d-4dab-bfe1-f20ec8578b58
+    ports:
+    - port: 6379
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:50:30Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: order-service
+    namespace: gluon-local
+    resourceVersion: "799311"
+    uid: c9340c56-17c2-4cd8-99eb-81457a9d9efe
+  subsets:
+  - addresses:
+    - ip: 192.168.194.44
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: order-service-84cc6d5cc8-hrcqm
+        namespace: gluon-local
+        uid: 679fa8b6-ed24-4914-97fe-fb78ccb023ca
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: payment-postgres
+    namespace: gluon-local
+    resourceVersion: "799366"
+    uid: 5f5703c6-a838-45e0-95e8-6db93d71da6e
+  subsets:
+  - addresses:
+    - ip: 192.168.194.29
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: payment-postgres-7c56556d8c-fh4n7
+        namespace: gluon-local
+        uid: fcdedac6-5926-49a2-9648-a6993580dacc
+    ports:
+    - port: 5432
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-08T19:50:51Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: payment-service
+    namespace: gluon-local
+    resourceVersion: "799382"
+    uid: 57f23857-db81-4af6-a3c1-e0ae1373e98d
+  subsets:
+  - addresses:
+    - ip: 192.168.194.37
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: payment-service-554bd47656-fplq9
+        namespace: gluon-local
+        uid: 673a76b0-7e2f-4a47-ad49-9c8a4b2821e0
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: postgres-exporter
+    namespace: gluon-local
+    resourceVersion: "799335"
+    uid: 32211ff7-3a9d-43f3-8b9c-8ed098327bf4
+  subsets:
+  - addresses:
+    - ip: 192.168.194.27
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: postgres-exporter-5bdfcbffbb-j8ppx
+        namespace: gluon-local
+        uid: eb8090e3-9abc-4833-bb27-5679e9bf929e
+    ports:
+    - name: http
+      port: 9187
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: prometheus
+    namespace: gluon-local
+    resourceVersion: "799262"
+    uid: 0df72724-79e4-4b34-a075-364d6075a901
+  subsets:
+  - addresses:
+    - ip: 192.168.194.20
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: prometheus-95df9f45d-pt6sh
+        namespace: gluon-local
+        uid: ad4e1c6c-3ebc-4e1f-82e3-cbc0e1c4b8ed
+    ports:
+    - name: http
+      port: 9090
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: redis-exporter
+    namespace: gluon-local
+    resourceVersion: "799360"
+    uid: 927e5abb-45b7-41d3-9a76-f2be144a0a90
+  subsets:
+  - addresses:
+    - ip: 192.168.194.33
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: redis-exporter-6b5cc8445-7xqfh
+        namespace: gluon-local
+        uid: 62b7c5da-349f-4449-8561-8b9217de0b24
+    ports:
+    - name: http
+      port: 9121
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-11-04T20:45:34Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: tempo
+    namespace: gluon-local
+    resourceVersion: "799332"
+    uid: d670e79e-ab8d-4693-8d01-6d68811c2a33
+  subsets:
+  - addresses:
+    - ip: 192.168.194.22
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: tempo-8574b8448-bbqwb
+        namespace: gluon-local
+        uid: 46adaf90-4b12-48ff-9a08-67001ff5f5a3
+    ports:
+    - name: otlp-http
+      port: 4318
+      protocol: TCP
+    - name: http
+      port: 3200
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-28T12:03:24Z"
+    labels:
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: user-postgres
+    namespace: gluon-local
+    resourceVersion: "799318"
+    uid: 43dc6b2a-e392-4a4e-b298-ea15682570d2
+  subsets:
+  - addresses:
+    - ip: 192.168.194.45
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: user-postgres-58dc7fc668-qb9tm
+        namespace: gluon-local
+        uid: 3648398b-ecac-4f7f-b032-0f35db2b5a5e
+    ports:
+    - port: 5432
+      protocol: TCP
+- apiVersion: v1
+  kind: Endpoints
+  metadata:
+    creationTimestamp: "2026-10-28T12:28:15Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpoints.kubernetes.io/managed-by: endpoint-controller
+    name: user-service
+    namespace: gluon-local
+    resourceVersion: "799345"
+    uid: 422e16d1-f19e-4217-9e7f-9b8b6ae7f3b0
+  subsets:
+  - addresses:
+    - ip: 192.168.194.96
+      nodeName: orbstack
+      targetRef:
+        kind: Pod
+        name: user-service-cd878ccdb-dvpqc
+        namespace: gluon-local
+        uid: d04f7522-d7d1-45b6-a349-4bafa6b151c8
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      protocol: TCP
+kind: List
+metadata:
+  resourceVersion: ""

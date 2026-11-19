@@ -1,0 +1,56 @@
+[
+    {
+        "Id": "sha256:4adb69db85f8a3a4e01de40aa3cccf8a56ced853761cb50a1f6d1bb6ec3788a2",
+        "RepoTags": [
+            "user-service-rs:latest"
+        ],
+        "RepoDigests": [
+            "user-service-rs@sha256:4adb69db85f8a3a4e01de40aa3cccf8a56ced853761cb50a1f6d1bb6ec3788a2"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-11-14T18:39:45.007407522Z",
+        "Config": {
+            "User": "65532:65532",
+            "ExposedPorts": {
+                "8080/tcp": {},
+                "9090/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "ASYNCAPI_HTML_DIR=/app/asyncapi-docs"
+            ],
+            "Entrypoint": [
+                "/usr/local/bin/user-service"
+            ],
+            "WorkingDir": "/app"
+        },
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 152844628,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:c96c411090da09187c55ab267826b3903b542b5c03f1cafa912d60e060e7850c",
+                "sha256:d055ef60e372490b105109f81be5fc663bedbe8c65e246b52518d0ee9b8e4d63",
+                "sha256:9131f3f2d568301c3655cb97a8aaefd6bb4d8d379aa0295e35308c6e41fee7af",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-11-14T18:50:01.988748769Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:4adb69db85f8a3a4e01de40aa3cccf8a56ced853761cb50a1f6d1bb6ec3788a2",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "lvinymy7l27l388pv3ob2dgm6",
+                    "CreatedAt": "2026-11-14T18:50:02.006788428Z"
+                }
+            ]
+        }
+    }
+]

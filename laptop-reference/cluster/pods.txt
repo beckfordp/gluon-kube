@@ -1,0 +1,48 @@
+NAME                                       READY   STATUS      RESTARTS        AGE     IP                NODE       NOMINATED NODE   READINESS GATES
+alertmanager-56659b4d8d-rtpc2              1/1     Running     4 (3d13h ago)   12d     192.168.194.61    orbstack   <none>           <none>
+apicurio-registry-65c778d967-5pjxq         2/2     Running     14 (2d ago)     15d     192.168.194.60    orbstack   <none>           <none>
+apicurio-registry-ui-745fb55f4f-nhfpg      1/1     Running     7 (2d ago)      16d     192.168.194.57    orbstack   <none>           <none>
+cadvisor-p474p                             1/1     Running     4 (3d13h ago)   12d     192.168.194.55    orbstack   <none>           <none>
+cart-redis-67b75bcdb6-dprvz                1/1     Running     7 (3d13h ago)   16d     192.168.194.62    orbstack   <none>           <none>
+cart-service-6db4f4b7d7-l74kh              1/1     Running     2 (2d ago)      6d2h    192.168.194.41    orbstack   <none>           <none>
+catalog-postgres-5dc64f78f6-l8lbw          1/1     Running     1 (3d13h ago)   6d2h    192.168.194.50    orbstack   <none>           <none>
+catalog-redis-6c78d79d89-n4tmx             1/1     Running     8 (2d ago)      16d     192.168.194.58    orbstack   <none>           <none>
+catalog-service-749b5575cd-ctgpf           1/1     Running     2 (2d ago)      6d2h    192.168.194.40    orbstack   <none>           <none>
+debezium-connector-register-cw4dr          0/1     Completed   0               42h     192.168.194.95    orbstack   <none>           <none>
+elasticsearch-7fb545b478-b7dhl             1/1     Running     4 (3d13h ago)   12d     192.168.194.52    orbstack   <none>           <none>
+filebeat-tstcf                             1/1     Running     2 (3d13h ago)   10d     192.168.194.25    orbstack   <none>           <none>
+fulfilment-outbox-cleanup-29913780-drg5x   0/1     Completed   0               112m    192.168.194.110   orbstack   <none>           <none>
+fulfilment-outbox-cleanup-29913840-bjrm5   0/1     Completed   0               65m     192.168.194.112   orbstack   <none>           <none>
+fulfilment-outbox-cleanup-29913900-qhhf9   0/1     Completed   0               5m42s   192.168.194.119   orbstack   <none>           <none>
+fulfilment-postgres-955f9cfdc-6ftng        1/1     Running     1 (3d13h ago)   6d2h    192.168.194.24    orbstack   <none>           <none>
+fulfilment-service-5c55785789-5qzg8        1/1     Running     2 (2d ago)      6d2h    192.168.194.46    orbstack   <none>           <none>
+grafana-64c5f878b7-q25pf                   1/1     Running     2 (2d ago)      10d     192.168.194.26    orbstack   <none>           <none>
+inventory-postgres-57cc5b7489-5v722        1/1     Running     1 (3d13h ago)   6d2h    192.168.194.23    orbstack   <none>           <none>
+inventory-service-55f746994-cg8bc          1/1     Running     2 (2d ago)      6d2h    192.168.194.30    orbstack   <none>           <none>
+kafka-6fd47dbc4f-l5gmk                     1/1     Running     8 (2d ago)      16d     192.168.194.19    orbstack   <none>           <none>
+kafka-connect-7c58dd7cdd-9lml5             1/1     Running     2 (2d ago)      10d     192.168.194.39    orbstack   <none>           <none>
+kafka-exporter-7df55697fc-h7nqv            1/1     Running     9 (2d ago)      12d     192.168.194.32    orbstack   <none>           <none>
+kibana-6d54668976-k5rm2                    1/1     Running     2 (3d13h ago)   10d     192.168.194.28    orbstack   <none>           <none>
+kube-state-metrics-56787575cf-sbl5x        1/1     Running     4 (3d13h ago)   12d     192.168.194.49    orbstack   <none>           <none>
+notification-postgres-5f9d96cbf6-xwd7t     1/1     Running     1 (2d ago)      6d2h    192.168.194.34    orbstack   <none>           <none>
+notification-service-d489766d5-r6f7b       1/1     Running     2 (2d ago)      6d2h    192.168.194.35    orbstack   <none>           <none>
+order-outbox-cleanup-29913780-npxvg        0/1     Completed   0               112m    192.168.194.109   orbstack   <none>           <none>
+order-outbox-cleanup-29913840-fcpkq        0/1     Completed   0               65m     192.168.194.113   orbstack   <none>           <none>
+order-outbox-cleanup-29913900-5cbkd        0/1     Completed   0               5m42s   192.168.194.116   orbstack   <none>           <none>
+order-postgres-5ccb7cf48f-rxxrp            1/1     Running     1 (2d ago)      6d2h    192.168.194.54    orbstack   <none>           <none>
+order-redis-654f8b74f6-9b96s               1/1     Running     7 (3d13h ago)   16d     192.168.194.47    orbstack   <none>           <none>
+order-service-84cc6d5cc8-hrcqm             1/1     Running     2 (2d ago)      6d2h    192.168.194.44    orbstack   <none>           <none>
+payment-outbox-cleanup-29913780-q88rb      0/1     Completed   0               112m    192.168.194.111   orbstack   <none>           <none>
+payment-outbox-cleanup-29913840-6vxzc      0/1     Completed   0               65m     192.168.194.114   orbstack   <none>           <none>
+payment-outbox-cleanup-29913900-dvlgw      0/1     Completed   0               5m42s   192.168.194.118   orbstack   <none>           <none>
+payment-postgres-7c56556d8c-fh4n7          1/1     Running     1 (2d ago)      6d2h    192.168.194.29    orbstack   <none>           <none>
+payment-service-554bd47656-fplq9           1/1     Running     2 (2d ago)      6d2h    192.168.194.37    orbstack   <none>           <none>
+postgres-exporter-5bdfcbffbb-j8ppx         1/1     Running     4 (3d13h ago)   12d     192.168.194.27    orbstack   <none>           <none>
+prometheus-95df9f45d-pt6sh                 1/1     Running     3 (2d ago)      11d     192.168.194.20    orbstack   <none>           <none>
+redis-exporter-6b5cc8445-7xqfh             1/1     Running     4 (2d ago)      12d     192.168.194.33    orbstack   <none>           <none>
+tempo-8574b8448-bbqwb                      1/1     Running     3 (3d13h ago)   11d     192.168.194.22    orbstack   <none>           <none>
+user-outbox-cleanup-29913780-ljp4x         0/1     Completed   0               112m    192.168.194.108   orbstack   <none>           <none>
+user-outbox-cleanup-29913840-r22gc         0/1     Completed   0               65m     192.168.194.115   orbstack   <none>           <none>
+user-outbox-cleanup-29913900-t5dtl         0/1     Completed   0               5m42s   192.168.194.117   orbstack   <none>           <none>
+user-postgres-58dc7fc668-qb9tm             1/1     Running     1 (2d ago)      6d2h    192.168.194.45    orbstack   <none>           <none>
+user-service-cd878ccdb-dvpqc               1/1     Running     0               42h     192.168.194.96    orbstack   <none>           <none>

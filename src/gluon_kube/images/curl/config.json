@@ -1,0 +1,14 @@
+{
+  "User": "curl_user",
+  "WorkingDir": "/home/curl_user",
+  "Entrypoint": [
+    "/entrypoint.sh"
+  ],
+  "Cmd": [
+    "curl"
+  ],
+  "Env": [
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "CURL_CA_BUNDLE=/cacert.pem"
+  ]
+}

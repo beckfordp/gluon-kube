@@ -1,0 +1,3441 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"alertmanager","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"alertmanager"}},"template":{"metadata":{"labels":{"app":"alertmanager","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"args":["--config.file=/etc/alertmanager/alertmanager.yml","--storage.path=/alertmanager","--cluster.listen-address="],"image":"prom/alertmanager:v0.28.1","name":"alertmanager","ports":[{"containerPort":9093,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/-/ready","port":9093},"periodSeconds":5},"resources":{"limits":{"cpu":"100m","memory":"32Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"volumeMounts":[{"mountPath":"/etc/alertmanager","name":"config"},{"mountPath":"/alertmanager","name":"data"}]}],"volumes":[{"configMap":{"name":"alertmanager-config-858khf2fc8"},"name":"config"},{"emptyDir":{"sizeLimit":"1Gi"},"name":"data"}]}}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: alertmanager
+    namespace: gluon-local
+    resourceVersion: "799418"
+    uid: c1641af1-a8ba-4910-b58c-c10c5c9ac05c
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: alertmanager
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: alertmanager
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - args:
+          - --config.file=/etc/alertmanager/alertmanager.yml
+          - --storage.path=/alertmanager
+          - --cluster.listen-address=
+          image: prom/alertmanager:v0.28.1
+          imagePullPolicy: IfNotPresent
+          name: alertmanager
+          ports:
+          - containerPort: 9093
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /-/ready
+              port: 9093
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 100m
+              memory: 32Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/alertmanager
+            name: config
+          - mountPath: /alertmanager
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: alertmanager-config-858khf2fc8
+          name: config
+        - emptyDir:
+            sizeLimit: 1Gi
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-03T13:52:16Z"
+      lastUpdateTime: "2026-11-03T13:52:28Z"
+      message: ReplicaSet "alertmanager-56659b4d8d" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:04Z"
+      lastUpdateTime: "2026-11-16T11:13:04Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "9"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"apicurio-registry","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"apicurio-registry"}},"template":{"metadata":{"labels":{"app":"apicurio-registry"}},"spec":{"containers":[{"env":[{"name":"JAVA_MAX_MEM_RATIO","value":"50"},{"name":"QUARKUS_HTTP_CORS_ORIGINS","value":"*"},{"name":"APICURIO_REST_DELETION_ARTIFACT_ENABLED","value":"true"},{"name":"APICURIO_REST_DELETION_ARTIFACT_VERSION_ENABLED","value":"true"},{"name":"APICURIO_REST_DELETION_GROUP_ENABLED","value":"true"}],"image":"apicurio/apicurio-registry:3.3.2","name":"apicurio-registry","ports":[{"containerPort":8080},{"containerPort":9000}],"readinessProbe":{"exec":{"command":["curl","--fail","--silent","http://localhost:9000/health/ready"]},"initialDelaySeconds":10,"periodSeconds":10,"timeoutSeconds":10},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}},{"command":["sh","-c","while true; do\n  python3 /restore/registry-restore --quiet --url http://localhost:8080 /restore || true\n  sleep 30\ndone\n"],"image":"python:3.13-alpine","name":"registry-restore","resources":{"limits":{"cpu":"100m","memory":"32Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"volumeMounts":[{"mountPath":"/restore","name":"registry-export","readOnly":true}]}],"volumes":[{"configMap":{"defaultMode":365,"name":"apicurio-registry-export","optional":true},"name":"registry-export"}]}}}}
+    creationTimestamp: "2026-10-25T08:35:43Z"
+    generation: 9
+    name: apicurio-registry
+    namespace: gluon-local
+    resourceVersion: "799246"
+    uid: 30aa8bf7-4f50-495e-b56b-7b0861bac458
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: apicurio-registry
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-10-25T23:39:54Z"
+        labels:
+          app: apicurio-registry
+      spec:
+        containers:
+        - env:
+          - name: JAVA_MAX_MEM_RATIO
+            value: "50"
+          - name: QUARKUS_HTTP_CORS_ORIGINS
+            value: '*'
+          - name: APICURIO_REST_DELETION_ARTIFACT_ENABLED
+            value: "true"
+          - name: APICURIO_REST_DELETION_ARTIFACT_VERSION_ENABLED
+            value: "true"
+          - name: APICURIO_REST_DELETION_GROUP_ENABLED
+            value: "true"
+          image: apicurio/apicurio-registry:3.3.2
+          imagePullPolicy: IfNotPresent
+          name: apicurio-registry
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 9000
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - --fail
+              - --silent
+              - http://localhost:9000/health/ready
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        - command:
+          - sh
+          - -c
+          - |
+            while true; do
+              python3 /restore/registry-restore --quiet --url http://localhost:8080 /restore || true
+              sleep 30
+            done
+          image: python:3.13-alpine
+          imagePullPolicy: IfNotPresent
+          name: registry-restore
+          resources:
+            limits:
+              cpu: 100m
+              memory: 32Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /restore
+            name: registry-export
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 365
+            name: apicurio-registry-export
+            optional: true
+          name: registry-export
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-25T08:35:43Z"
+      lastUpdateTime: "2026-10-31T21:45:36Z"
+      message: ReplicaSet "apicurio-registry-65c778d967" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 9
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"apicurio-registry-ui","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"apicurio-registry-ui"}},"template":{"metadata":{"labels":{"app":"apicurio-registry-ui"}},"spec":{"containers":[{"env":[{"name":"REGISTRY_API_URL","value":"http://apicurio-registry.gluon-local.svc.cluster.local:8080/apis/registry/v3"}],"image":"apicurio/apicurio-registry-ui:3.3.2","name":"apicurio-registry-ui","ports":[{"containerPort":8080}],"readinessProbe":{"exec":{"command":["curl","--fail","--silent","http://localhost:8080/"]},"initialDelaySeconds":10,"periodSeconds":10,"timeoutSeconds":10},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"50m","memory":"128Mi"}}}]}}}}
+    creationTimestamp: "2026-10-25T23:19:09Z"
+    generation: 2
+    name: apicurio-registry-ui
+    namespace: gluon-local
+    resourceVersion: "799278"
+    uid: 9c2a70f9-53a5-4d79-a7b4-eb1552f65989
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: apicurio-registry-ui
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: apicurio-registry-ui
+      spec:
+        containers:
+        - env:
+          - name: REGISTRY_API_URL
+            value: http://apicurio-registry.gluon-local.svc.cluster.local:8080/apis/registry/v3
+          image: apicurio/apicurio-registry-ui:3.3.2
+          imagePullPolicy: IfNotPresent
+          name: apicurio-registry-ui
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - --fail
+              - --silent
+              - http://localhost:8080/
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-25T23:19:09Z"
+      lastUpdateTime: "2026-10-30T13:23:34Z"
+      message: ReplicaSet "apicurio-registry-ui-745fb55f4f" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"cart-redis","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"cart-redis"}},"template":{"metadata":{"labels":{"app":"cart-redis"}},"spec":{"containers":[{"image":"redis:7-alpine","name":"redis","ports":[{"containerPort":6379}],"readinessProbe":{"exec":{"command":["redis-cli","ping"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}]}}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    generation: 2
+    name: cart-redis
+    namespace: gluon-local
+    resourceVersion: "799344"
+    uid: 69194bbd-00ff-4740-a9ba-205112918706
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: cart-redis
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: cart-redis
+      spec:
+        containers:
+        - image: redis:7-alpine
+          imagePullPolicy: IfNotPresent
+          name: redis
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - redis-cli
+              - ping
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:26Z"
+      lastUpdateTime: "2026-10-30T13:23:22Z"
+      message: ReplicaSet "cart-redis-67b75bcdb6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "18"
+      meta.helm.sh/release-name: cart-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:07Z"
+    generation: 18
+    labels:
+      app: cart-service
+      app.kubernetes.io/managed-by: Helm
+    name: cart-service
+    namespace: gluon-local
+    resourceVersion: "799359"
+    uid: 752e421f-69a0-4943-b1da-2edd259eba86
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: cart-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:20:55Z"
+        labels:
+          app: cart-service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -XX:MaxRAMPercentage=40
+          - name: MALLOC_ARENA_MAX
+            value: "2"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: REDIS_URI
+            value: redis://cart-redis:6379
+          image: cart-service:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: cart-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:50:07Z"
+      lastUpdateTime: "2026-11-10T10:21:06Z"
+      message: ReplicaSet "cart-service-6db4f4b7d7" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 18
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "3"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"catalog-postgres","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"catalog-postgres"}},"template":{"metadata":{"labels":{"app":"catalog-postgres"}},"spec":{"containers":[{"env":[{"name":"POSTGRES_DB","value":"catalog"},{"name":"POSTGRES_USER","value":"catalog"},{"name":"POSTGRES_PASSWORD","value":"catalog"}],"image":"postgres:16-alpine","name":"postgres","ports":[{"containerPort":5432}],"readinessProbe":{"exec":{"command":["pg_isready","-U","catalog"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"data"}]}],"volumes":[{"emptyDir":{},"name":"data"}]}}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    generation: 3
+    name: catalog-postgres
+    namespace: gluon-local
+    resourceVersion: "799295"
+    uid: bf01a74d-f396-46cf-8ff7-3fa8b6a9a5a2
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: catalog-postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:15:57Z"
+        labels:
+          app: catalog-postgres
+      spec:
+        containers:
+        - env:
+          - name: POSTGRES_DB
+            value: catalog
+          - name: POSTGRES_USER
+            value: catalog
+          - name: POSTGRES_PASSWORD
+            value: catalog
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - catalog
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:26Z"
+      lastUpdateTime: "2026-11-10T10:16:06Z"
+      message: ReplicaSet "catalog-postgres-5dc64f78f6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"catalog-redis","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"catalog-redis"}},"template":{"metadata":{"labels":{"app":"catalog-redis"}},"spec":{"containers":[{"image":"redis:7-alpine","name":"redis","ports":[{"containerPort":6379}],"readinessProbe":{"exec":{"command":["redis-cli","ping"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}]}}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    generation: 2
+    name: catalog-redis
+    namespace: gluon-local
+    resourceVersion: "799324"
+    uid: 18d27058-f04d-46b1-9749-6ad10408f268
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: catalog-redis
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: catalog-redis
+      spec:
+        containers:
+        - image: redis:7-alpine
+          imagePullPolicy: IfNotPresent
+          name: redis
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - redis-cli
+              - ping
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:26Z"
+      lastUpdateTime: "2026-10-30T13:23:23Z"
+      message: ReplicaSet "catalog-redis-6c78d79d89" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "19"
+      meta.helm.sh/release-name: catalog-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:49:38Z"
+    generation: 19
+    labels:
+      app: catalog-service
+      app.kubernetes.io/managed-by: Helm
+    name: catalog-service
+    namespace: gluon-local
+    resourceVersion: "799306"
+    uid: db4df1ae-f69e-496a-829b-022722f950c4
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: catalog-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:20:23Z"
+        labels:
+          app: catalog-service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -XX:MaxRAMPercentage=40
+          - name: MALLOC_ARENA_MAX
+            value: "2"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: POSTGRES_HOST
+            value: catalog-postgres
+          - name: POSTGRES_DB
+            value: catalog
+          - name: POSTGRES_USER
+            value: catalog
+          - name: POSTGRES_PASSWORD
+            value: catalog
+          - name: REDIS_URI
+            value: redis://catalog-redis:6379
+          image: catalog-service:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: catalog-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:49:38Z"
+      lastUpdateTime: "2026-11-10T10:20:41Z"
+      message: ReplicaSet "catalog-service-749b5575cd" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 19
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"elasticsearch","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"elasticsearch"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"app":"elasticsearch","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"env":[{"name":"discovery.type","value":"single-node"},{"name":"xpack.security.enabled","value":"false"},{"name":"xpack.security.http.ssl.enabled","value":"false"},{"name":"xpack.ml.enabled","value":"false"},{"name":"node.store.allow_mmap","value":"false"},{"name":"ES_JAVA_OPTS","value":"-Xms512m -Xmx512m"}],"image":"docker.elastic.co/elasticsearch/elasticsearch:8.19.19","name":"elasticsearch","ports":[{"containerPort":9200,"name":"http"}],"readinessProbe":{"failureThreshold":60,"httpGet":{"path":"/_cluster/health?wait_for_status=yellow\u0026timeout=1s","port":9200},"periodSeconds":5},"resources":{"limits":{"cpu":"1000m","memory":"1152Mi"},"requests":{"cpu":"250m","memory":"1152Mi"}},"volumeMounts":[{"mountPath":"/usr/share/elasticsearch/data","name":"data"}]}],"volumes":[{"emptyDir":{"sizeLimit":"2Gi"},"name":"data"}]}}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: elasticsearch
+    namespace: gluon-local
+    resourceVersion: "799264"
+    uid: 95516827-a8b9-4635-8d79-fc2f99d0ee5f
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: elasticsearch
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: elasticsearch
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - env:
+          - name: discovery.type
+            value: single-node
+          - name: xpack.security.enabled
+            value: "false"
+          - name: xpack.security.http.ssl.enabled
+            value: "false"
+          - name: xpack.ml.enabled
+            value: "false"
+          - name: node.store.allow_mmap
+            value: "false"
+          - name: ES_JAVA_OPTS
+            value: -Xms512m -Xmx512m
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.19.19
+          imagePullPolicy: IfNotPresent
+          name: elasticsearch
+          ports:
+          - containerPort: 9200
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /_cluster/health?wait_for_status=yellow&timeout=1s
+              port: 9200
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1152Mi
+            requests:
+              cpu: 250m
+              memory: 1152Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /usr/share/elasticsearch/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            sizeLimit: 2Gi
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-03T13:52:16Z"
+      lastUpdateTime: "2026-11-03T13:52:58Z"
+      message: ReplicaSet "elasticsearch-7fb545b478" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "3"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"fulfilment-postgres","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"fulfilment-postgres"}},"template":{"metadata":{"labels":{"app":"fulfilment-postgres"}},"spec":{"containers":[{"args":["-c","wal_level=logical"],"env":[{"name":"POSTGRES_DB","value":"fulfilment"},{"name":"POSTGRES_USER","value":"fulfilment"},{"name":"POSTGRES_PASSWORD","value":"fulfilment"}],"image":"postgres:16-alpine","name":"postgres","ports":[{"containerPort":5432}],"readinessProbe":{"exec":{"command":["pg_isready","-U","fulfilment"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"data"}]}],"volumes":[{"emptyDir":{},"name":"data"}]}}}}
+    creationTimestamp: "2026-10-28T14:29:37Z"
+    generation: 3
+    name: fulfilment-postgres
+    namespace: gluon-local
+    resourceVersion: "799390"
+    uid: a321e21f-4325-48cd-bf48-9a334121ae73
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: fulfilment-postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:15:57Z"
+        labels:
+          app: fulfilment-postgres
+      spec:
+        containers:
+        - args:
+          - -c
+          - wal_level=logical
+          env:
+          - name: POSTGRES_DB
+            value: fulfilment
+          - name: POSTGRES_USER
+            value: fulfilment
+          - name: POSTGRES_PASSWORD
+            value: fulfilment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - fulfilment
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-28T14:29:37Z"
+      lastUpdateTime: "2026-11-10T10:16:06Z"
+      message: ReplicaSet "fulfilment-postgres-955f9cfdc" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "27"
+      meta.helm.sh/release-name: fulfilment-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-28T14:33:00Z"
+    generation: 27
+    labels:
+      app: fulfilment-service
+      app.kubernetes.io/managed-by: Helm
+    name: fulfilment-service
+    namespace: gluon-local
+    resourceVersion: "799399"
+    uid: fa32824c-bb2e-4fff-8b34-f17e9811ba71
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: fulfilment-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:25:34Z"
+        labels:
+          app: fulfilment-service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -XX:MaxRAMPercentage=40
+          - name: MALLOC_ARENA_MAX
+            value: "2"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: POSTGRES_HOST
+            value: fulfilment-postgres
+          - name: POSTGRES_DB
+            value: fulfilment
+          - name: POSTGRES_USER
+            value: fulfilment
+          - name: POSTGRES_PASSWORD
+            value: fulfilment
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            value: kafka:9092
+          - name: ORDER_SERVICE_URL
+            value: http://order-service:8080
+          - name: FULFILMENT_SIMULATION_ENABLED
+            value: "true"
+          image: fulfilment-service:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: fulfilment-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-28T14:33:00Z"
+      lastUpdateTime: "2026-11-10T10:25:51Z"
+      message: ReplicaSet "fulfilment-service-5c55785789" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 27
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs","gluon-obs/ui":"grafana"},"name":"grafana","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"grafana"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"app":"grafana","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"env":[{"name":"GF_AUTH_ANONYMOUS_ENABLED","value":"true"},{"name":"GF_AUTH_ANONYMOUS_ORG_ROLE","value":"Viewer"},{"name":"GF_USERS_VIEWERS_CAN_EDIT","value":"true"},{"name":"GF_ANALYTICS_REPORTING_ENABLED","value":"false"},{"name":"GF_ANALYTICS_CHECK_FOR_UPDATES","value":"false"},{"name":"GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES","value":"false"},{"name":"GF_NEWS_NEWS_FEED_ENABLED","value":"false"},{"name":"GF_PLUGINS_PREINSTALL_DISABLED","value":"true"},{"name":"GF_DATABASE_WAL","value":"true"},{"name":"GOMEMLIMIT","value":"200MiB"},{"name":"GF_DATAPROXY_MAX_CONNS_PER_HOST","value":"4"},{"name":"GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH","value":"/var/lib/grafana/dashboards/1-Overview/gluon-christmas-rush.json"}],"image":"grafana/grafana-oss:13.0.2","name":"grafana","ports":[{"containerPort":3000,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/api/health","port":3000},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"50m","memory":"256Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":472},"volumeMounts":[{"mountPath":"/var/lib/grafana","name":"data"},{"mountPath":"/tmp","name":"tmp"},{"mountPath":"/var/log/grafana","name":"logs"},{"mountPath":"/etc/grafana/provisioning/datasources","name":"datasources"},{"mountPath":"/etc/grafana/provisioning/dashboards","name":"dashboard-providers"},{"mountPath":"/var/lib/grafana/dashboards/1-Overview","name":"dashboards-overview"},{"mountPath":"/var/lib/grafana/dashboards/2-Services","name":"dashboards-services"},{"mountPath":"/var/lib/grafana/dashboards/3-Platform","name":"dashboards-platform"}]}],"volumes":[{"emptyDir":{},"name":"data"},{"emptyDir":{},"name":"tmp"},{"emptyDir":{},"name":"logs"},{"configMap":{"name":"grafana-datasources-2mk84g2m9k"},"name":"datasources"},{"configMap":{"name":"grafana-dashboard-providers-75652gtct8"},"name":"dashboard-providers"},{"configMap":{"name":"grafana-dashboards-overview-2fbg6c552t"},"name":"dashboards-overview"},{"configMap":{"name":"grafana-dashboards-services-hghm5g8thg"},"name":"dashboards-services"},{"configMap":{"name":"grafana-dashboards-platform-kc6ff74kg7"},"name":"dashboards-platform"}]}}}}
+    creationTimestamp: "2026-11-05T14:58:56Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      gluon-obs/ui: grafana
+    name: grafana
+    namespace: gluon-local
+    resourceVersion: "799424"
+    uid: efc2f64d-c618-4371-8fcf-252fcbaa357d
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: grafana
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: grafana
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - env:
+          - name: GF_AUTH_ANONYMOUS_ENABLED
+            value: "true"
+          - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+            value: Viewer
+          - name: GF_USERS_VIEWERS_CAN_EDIT
+            value: "true"
+          - name: GF_ANALYTICS_REPORTING_ENABLED
+            value: "false"
+          - name: GF_ANALYTICS_CHECK_FOR_UPDATES
+            value: "false"
+          - name: GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES
+            value: "false"
+          - name: GF_NEWS_NEWS_FEED_ENABLED
+            value: "false"
+          - name: GF_PLUGINS_PREINSTALL_DISABLED
+            value: "true"
+          - name: GF_DATABASE_WAL
+            value: "true"
+          - name: GOMEMLIMIT
+            value: 200MiB
+          - name: GF_DATAPROXY_MAX_CONNS_PER_HOST
+            value: "4"
+          - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
+            value: /var/lib/grafana/dashboards/1-Overview/gluon-christmas-rush.json
+          image: grafana/grafana-oss:13.0.2
+          imagePullPolicy: IfNotPresent
+          name: grafana
+          ports:
+          - containerPort: 3000
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/health
+              port: 3000
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 472
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/grafana
+            name: data
+          - mountPath: /tmp
+            name: tmp
+          - mountPath: /var/log/grafana
+            name: logs
+          - mountPath: /etc/grafana/provisioning/datasources
+            name: datasources
+          - mountPath: /etc/grafana/provisioning/dashboards
+            name: dashboard-providers
+          - mountPath: /var/lib/grafana/dashboards/1-Overview
+            name: dashboards-overview
+          - mountPath: /var/lib/grafana/dashboards/2-Services
+            name: dashboards-services
+          - mountPath: /var/lib/grafana/dashboards/3-Platform
+            name: dashboards-platform
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+        - emptyDir: {}
+          name: tmp
+        - emptyDir: {}
+          name: logs
+        - configMap:
+            defaultMode: 420
+            name: grafana-datasources-2mk84g2m9k
+          name: datasources
+        - configMap:
+            defaultMode: 420
+            name: grafana-dashboard-providers-75652gtct8
+          name: dashboard-providers
+        - configMap:
+            defaultMode: 420
+            name: grafana-dashboards-overview-2fbg6c552t
+          name: dashboards-overview
+        - configMap:
+            defaultMode: 420
+            name: grafana-dashboards-services-hghm5g8thg
+          name: dashboards-services
+        - configMap:
+            defaultMode: 420
+            name: grafana-dashboards-platform-kc6ff74kg7
+          name: dashboards-platform
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-05T14:58:56Z"
+      lastUpdateTime: "2026-11-05T14:59:38Z"
+      message: ReplicaSet "grafana-64c5f878b7" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:04Z"
+      lastUpdateTime: "2026-11-16T11:13:04Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "4"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"inventory-postgres","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"inventory-postgres"}},"template":{"metadata":{"labels":{"app":"inventory-postgres"}},"spec":{"containers":[{"args":["-c","wal_level=logical"],"env":[{"name":"POSTGRES_DB","value":"inventory"},{"name":"POSTGRES_USER","value":"inventory"},{"name":"POSTGRES_PASSWORD","value":"inventory"}],"image":"postgres:16-alpine","name":"postgres","ports":[{"containerPort":5432}],"readinessProbe":{"exec":{"command":["pg_isready","-U","inventory"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"data"}]}],"volumes":[{"emptyDir":{},"name":"data"}]}}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    generation: 4
+    name: inventory-postgres
+    namespace: gluon-local
+    resourceVersion: "799236"
+    uid: 5f1ee611-1e7e-49bb-bfd1-75d215927518
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: inventory-postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:15:57Z"
+        labels:
+          app: inventory-postgres
+      spec:
+        containers:
+        - args:
+          - -c
+          - wal_level=logical
+          env:
+          - name: POSTGRES_DB
+            value: inventory
+          - name: POSTGRES_USER
+            value: inventory
+          - name: POSTGRES_PASSWORD
+            value: inventory
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - inventory
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:26Z"
+      lastUpdateTime: "2026-11-10T10:16:06Z"
+      message: ReplicaSet "inventory-postgres-57cc5b7489" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 4
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "34"
+      meta.helm.sh/release-name: inventory-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:42Z"
+    generation: 34
+    labels:
+      app: inventory-service
+      app.kubernetes.io/managed-by: Helm
+    name: inventory-service
+    namespace: gluon-local
+    resourceVersion: "799233"
+    uid: 70598cc0-06c1-477c-ba6e-84c7da4eea34
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: inventory-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:22:10Z"
+        labels:
+          app: inventory-service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -XX:MaxRAMPercentage=40
+          - name: MALLOC_ARENA_MAX
+            value: "2"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: POSTGRES_HOST
+            value: inventory-postgres
+          - name: POSTGRES_DB
+            value: inventory
+          - name: POSTGRES_USER
+            value: inventory
+          - name: POSTGRES_PASSWORD
+            value: inventory
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            value: kafka:9092
+          image: inventory-service:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: inventory-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:50:42Z"
+      lastUpdateTime: "2026-11-10T10:22:24Z"
+      message: ReplicaSet "inventory-service-55f746994" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 34
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "3"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"kafka","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"kafka"}},"template":{"metadata":{"labels":{"app":"kafka"}},"spec":{"containers":[{"env":[{"name":"KAFKA_HEAP_OPTS","value":"-Xms512m -Xmx512m"},{"name":"KAFKA_NODE_ID","value":"1"},{"name":"KAFKA_PROCESS_ROLES","value":"broker,controller"},{"name":"KAFKA_LISTENERS","value":"PLAINTEXT://:9092,CONTROLLER://:9093"},{"name":"KAFKA_ADVERTISED_LISTENERS","value":"PLAINTEXT://kafka:9092"},{"name":"KAFKA_CONTROLLER_LISTENER_NAMES","value":"CONTROLLER"},{"name":"KAFKA_CONTROLLER_QUORUM_VOTERS","value":"1@localhost:9093"},{"name":"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP","value":"CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"},{"name":"KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR","value":"1"},{"name":"CLUSTER_ID","value":"MkU3OEVBNTcwNTJENDM2Qk"}],"image":"apache/kafka:3.8.0","name":"kafka","ports":[{"containerPort":9092}],"readinessProbe":{"exec":{"command":["/opt/kafka/bin/kafka-broker-api-versions.sh","--bootstrap-server","localhost:9092"]},"initialDelaySeconds":10,"periodSeconds":10,"timeoutSeconds":10},"resources":{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}}]}}}}
+    creationTimestamp: "2026-10-08T19:39:36Z"
+    generation: 3
+    name: kafka
+    namespace: gluon-local
+    resourceVersion: "799251"
+    uid: 8128eb97-5674-46b0-9873-ebdfa67e5279
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: kafka
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: kafka
+      spec:
+        containers:
+        - env:
+          - name: KAFKA_HEAP_OPTS
+            value: -Xms512m -Xmx512m
+          - name: KAFKA_NODE_ID
+            value: "1"
+          - name: KAFKA_PROCESS_ROLES
+            value: broker,controller
+          - name: KAFKA_LISTENERS
+            value: PLAINTEXT://:9092,CONTROLLER://:9093
+          - name: KAFKA_ADVERTISED_LISTENERS
+            value: PLAINTEXT://kafka:9092
+          - name: KAFKA_CONTROLLER_LISTENER_NAMES
+            value: CONTROLLER
+          - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+            value: 1@localhost:9093
+          - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+            value: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+          - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+            value: "1"
+          - name: CLUSTER_ID
+            value: MkU3OEVBNTcwNTJENDM2Qk
+          image: apache/kafka:3.8.0
+          imagePullPolicy: IfNotPresent
+          name: kafka
+          ports:
+          - containerPort: 9092
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /opt/kafka/bin/kafka-broker-api-versions.sh
+              - --bootstrap-server
+              - localhost:9092
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:36Z"
+      lastUpdateTime: "2026-10-30T13:23:35Z"
+      message: ReplicaSet "kafka-6fd47dbc4f" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "6"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"kafka-connect","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"kafka-connect"}},"template":{"metadata":{"labels":{"app":"kafka-connect"}},"spec":{"containers":[{"env":[{"name":"KAFKA_OPTS","value":"-javaagent:/jmx/jmx_prometheus_javaagent.jar=9404:/jmx-config/metrics.yaml"},{"name":"HEAP_OPTS","value":"-Xms256m -Xmx512m"},{"name":"BOOTSTRAP_SERVERS","value":"kafka:9092"},{"name":"GROUP_ID","value":"gluon-connect"},{"name":"CONFIG_STORAGE_TOPIC","value":"connect-configs"},{"name":"OFFSET_STORAGE_TOPIC","value":"connect-offsets"},{"name":"STATUS_STORAGE_TOPIC","value":"connect-status"},{"name":"CONFIG_STORAGE_REPLICATION_FACTOR","value":"1"},{"name":"OFFSET_STORAGE_REPLICATION_FACTOR","value":"1"},{"name":"STATUS_STORAGE_REPLICATION_FACTOR","value":"1"},{"name":"KEY_CONVERTER","value":"org.apache.kafka.connect.storage.StringConverter"},{"name":"VALUE_CONVERTER","value":"org.apache.kafka.connect.storage.StringConverter"}],"image":"debezium/connect:3.0.0.Final","name":"kafka-connect","ports":[{"containerPort":8083},{"containerPort":9404,"name":"jmx"}],"readinessProbe":{"exec":{"command":["curl","--fail","--silent","http://localhost:8083/"]},"initialDelaySeconds":15,"periodSeconds":10,"timeoutSeconds":10},"resources":{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi"}},"volumeMounts":[{"mountPath":"/jmx","name":"jmx"},{"mountPath":"/jmx-config","name":"jmx-config"}]}],"initContainers":[{"command":["sh","-c","set -e\ncurl -fsSL -o /jmx/download.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar\necho \"7d61f737fd661610ccc14aea79764faa1ea94a340cbc8f0029b3d2edea3d80c1  /jmx/download.jar\" | sha256sum -c -\nmv /jmx/download.jar /jmx/jmx_prometheus_javaagent.jar\n"],"image":"curlimages/curl:8.11.1","name":"fetch-jmx-exporter","resources":{"limits":{"cpu":"200m","memory":"32Mi"},"requests":{"cpu":"50m","memory":"32Mi"}},"volumeMounts":[{"mountPath":"/jmx","name":"jmx"}]}],"volumes":[{"emptyDir":{},"name":"jmx"},{"configMap":{"name":"kafka-connect-jmx-exporter"},"name":"jmx-config"}]}}}}
+    creationTimestamp: "2026-10-15T19:40:21Z"
+    generation: 8
+    name: kafka-connect
+    namespace: gluon-local
+    resourceVersion: "799225"
+    uid: 766b0b84-2a8a-467e-9246-73217262e827
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: kafka-connect
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-05T15:02:21Z"
+        labels:
+          app: kafka-connect
+      spec:
+        containers:
+        - env:
+          - name: KAFKA_OPTS
+            value: -javaagent:/jmx/jmx_prometheus_javaagent.jar=9404:/jmx-config/metrics.yaml
+          - name: HEAP_OPTS
+            value: -Xms256m -Xmx512m
+          - name: BOOTSTRAP_SERVERS
+            value: kafka:9092
+          - name: GROUP_ID
+            value: gluon-connect
+          - name: CONFIG_STORAGE_TOPIC
+            value: connect-configs
+          - name: OFFSET_STORAGE_TOPIC
+            value: connect-offsets
+          - name: STATUS_STORAGE_TOPIC
+            value: connect-status
+          - name: CONFIG_STORAGE_REPLICATION_FACTOR
+            value: "1"
+          - name: OFFSET_STORAGE_REPLICATION_FACTOR
+            value: "1"
+          - name: STATUS_STORAGE_REPLICATION_FACTOR
+            value: "1"
+          - name: KEY_CONVERTER
+            value: org.apache.kafka.connect.storage.StringConverter
+          - name: VALUE_CONVERTER
+            value: org.apache.kafka.connect.storage.StringConverter
+          image: debezium/connect:3.0.0.Final
+          imagePullPolicy: IfNotPresent
+          name: kafka-connect
+          ports:
+          - containerPort: 8083
+            protocol: TCP
+          - containerPort: 9404
+            name: jmx
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - --fail
+              - --silent
+              - http://localhost:8083/
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /jmx
+            name: jmx
+          - mountPath: /jmx-config
+            name: jmx-config
+        dnsPolicy: ClusterFirst
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - |
+            set -e
+            curl -fsSL -o /jmx/download.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar
+            echo "7d61f737fd661610ccc14aea79764faa1ea94a340cbc8f0029b3d2edea3d80c1  /jmx/download.jar" | sha256sum -c -
+            mv /jmx/download.jar /jmx/jmx_prometheus_javaagent.jar
+          image: curlimages/curl:8.11.1
+          imagePullPolicy: IfNotPresent
+          name: fetch-jmx-exporter
+          resources:
+            limits:
+              cpu: 200m
+              memory: 32Mi
+            requests:
+              cpu: 50m
+              memory: 32Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /jmx
+            name: jmx
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: jmx
+        - configMap:
+            defaultMode: 420
+            name: kafka-connect-jmx-exporter
+          name: jmx-config
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-15T19:40:21Z"
+      lastUpdateTime: "2026-11-05T15:07:58Z"
+      message: ReplicaSet "kafka-connect-7c58dd7cdd" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 8
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"kafka-exporter","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"kafka-exporter"}},"template":{"metadata":{"labels":{"app":"kafka-exporter","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"args":["--kafka.server=kafka:9092"],"image":"danielqsj/kafka-exporter:v1.9.0","name":"kafka-exporter","ports":[{"containerPort":9308,"name":"http"}],"resources":{"limits":{"cpu":"200m","memory":"64Mi"},"requests":{"cpu":"20m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":65534}}]}}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: kafka-exporter
+    namespace: gluon-local
+    resourceVersion: "799302"
+    uid: 6f833b53-9638-42ab-b82f-be2f71e05409
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: kafka-exporter
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: kafka-exporter
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - args:
+          - --kafka.server=kafka:9092
+          image: danielqsj/kafka-exporter:v1.9.0
+          imagePullPolicy: IfNotPresent
+          name: kafka-exporter
+          ports:
+          - containerPort: 9308
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 64Mi
+            requests:
+              cpu: 20m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-03T13:52:16Z"
+      lastUpdateTime: "2026-11-03T13:52:21Z"
+      message: ReplicaSet "kafka-exporter-7df55697fc" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs","gluon-obs/ui":"kibana"},"name":"kibana","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"kibana"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"app":"kibana","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"env":[{"name":"ELASTICSEARCH_HOSTS","value":"[\"http://elasticsearch:9200\"]"},{"name":"NODE_OPTIONS","value":"--max-old-space-size=512"},{"name":"TELEMETRY_OPTIN","value":"false"},{"name":"TELEMETRY_ENABLED","value":"false"}],"image":"docker.elastic.co/kibana/kibana:8.19.19","name":"kibana","ports":[{"containerPort":5601,"name":"http"}],"readinessProbe":{"failureThreshold":60,"httpGet":{"path":"/api/status","port":5601},"periodSeconds":5},"resources":{"limits":{"cpu":"1000m","memory":"768Mi"},"requests":{"cpu":"100m","memory":"768Mi"}}}]}}}}
+    creationTimestamp: "2026-11-05T14:57:49Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      gluon-obs/ui: kibana
+    name: kibana
+    namespace: gluon-local
+    resourceVersion: "799329"
+    uid: 9c201e19-610b-4dae-aa7e-1683664420de
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: kibana
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: kibana
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - env:
+          - name: ELASTICSEARCH_HOSTS
+            value: '["http://elasticsearch:9200"]'
+          - name: NODE_OPTIONS
+            value: --max-old-space-size=512
+          - name: TELEMETRY_OPTIN
+            value: "false"
+          - name: TELEMETRY_ENABLED
+            value: "false"
+          image: docker.elastic.co/kibana/kibana:8.19.19
+          imagePullPolicy: IfNotPresent
+          name: kibana
+          ports:
+          - containerPort: 5601
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /api/status
+              port: 5601
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "1"
+              memory: 768Mi
+            requests:
+              cpu: 100m
+              memory: 768Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-05T14:57:49Z"
+      lastUpdateTime: "2026-11-05T14:58:27Z"
+      message: ReplicaSet "kibana-6d54668976" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"kube-state-metrics","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"kube-state-metrics"}},"template":{"metadata":{"labels":{"app":"kube-state-metrics","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"args":["--namespaces=gluon-local","--resources=pods,deployments,daemonsets,replicasets,jobs,cronjobs"],"image":"registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.16.0","name":"kube-state-metrics","ports":[{"containerPort":8080,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":8081},"periodSeconds":5},"resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"20m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":65534}}],"serviceAccountName":"kube-state-metrics"}}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: kube-state-metrics
+    namespace: gluon-local
+    resourceVersion: "799276"
+    uid: 9039f7c4-f052-4c19-b043-91864f3fe984
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: kube-state-metrics
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: kube-state-metrics
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - args:
+          - --namespaces=gluon-local
+          - --resources=pods,deployments,daemonsets,replicasets,jobs,cronjobs
+          image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.16.0
+          imagePullPolicy: IfNotPresent
+          name: kube-state-metrics
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: 8081
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 20m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: kube-state-metrics
+        serviceAccountName: kube-state-metrics
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-03T13:52:16Z"
+      lastUpdateTime: "2026-11-03T13:52:25Z"
+      message: ReplicaSet "kube-state-metrics-56787575cf" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"notification-postgres","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"notification-postgres"}},"template":{"metadata":{"labels":{"app":"notification-postgres"}},"spec":{"containers":[{"env":[{"name":"POSTGRES_DB","value":"notification"},{"name":"POSTGRES_USER","value":"notification"},{"name":"POSTGRES_PASSWORD","value":"notification"}],"image":"postgres:16-alpine","name":"postgres","ports":[{"containerPort":5432}],"readinessProbe":{"exec":{"command":["pg_isready","-U","notification"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"data"}]}],"volumes":[{"emptyDir":{},"name":"data"}]}}}}
+    creationTimestamp: "2026-11-02T17:10:51Z"
+    generation: 2
+    name: notification-postgres
+    namespace: gluon-local
+    resourceVersion: "799394"
+    uid: 7b63520c-c13f-45a4-95b5-6dcf34553320
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: notification-postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:15:57Z"
+        labels:
+          app: notification-postgres
+      spec:
+        containers:
+        - env:
+          - name: POSTGRES_DB
+            value: notification
+          - name: POSTGRES_USER
+            value: notification
+          - name: POSTGRES_PASSWORD
+            value: notification
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - notification
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-02T17:10:51Z"
+      lastUpdateTime: "2026-11-10T10:16:06Z"
+      message: ReplicaSet "notification-postgres-5f9d96cbf6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "33"
+      meta.helm.sh/release-name: notification-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:51:02Z"
+    generation: 33
+    labels:
+      app: notification-service
+      app.kubernetes.io/managed-by: Helm
+    name: notification-service
+    namespace: gluon-local
+    resourceVersion: "799240"
+    uid: 0a671e2a-9a48-4374-9f0c-ab976c7be62c
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: notification-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:23:24Z"
+        labels:
+          app: notification-service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -XX:MaxRAMPercentage=40
+          - name: MALLOC_ARENA_MAX
+            value: "2"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: POSTGRES_HOST
+            value: notification-postgres
+          - name: POSTGRES_DB
+            value: notification
+          - name: POSTGRES_USER
+            value: notification
+          - name: POSTGRES_PASSWORD
+            value: notification
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            value: kafka:9092
+          - name: USER_SERVICE_URL
+            value: http://user-service:8080
+          - name: ORDER_SERVICE_URL
+            value: http://order-service:8080
+          image: notification-service:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: notification-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:51:02Z"
+      lastUpdateTime: "2026-11-10T10:23:40Z"
+      message: ReplicaSet "notification-service-d489766d5" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 33
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "4"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"order-postgres","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"order-postgres"}},"template":{"metadata":{"labels":{"app":"order-postgres"}},"spec":{"containers":[{"args":["-c","wal_level=logical"],"env":[{"name":"POSTGRES_DB","value":"order"},{"name":"POSTGRES_USER","value":"order"},{"name":"POSTGRES_PASSWORD","value":"order"}],"image":"postgres:16-alpine","name":"postgres","ports":[{"containerPort":5432}],"readinessProbe":{"exec":{"command":["pg_isready","-U","order"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"data"}]}],"volumes":[{"emptyDir":{},"name":"data"}]}}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    generation: 4
+    name: order-postgres
+    namespace: gluon-local
+    resourceVersion: "799374"
+    uid: fc3bf9da-756f-44d5-965b-72141b396f9d
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: order-postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:15:57Z"
+        labels:
+          app: order-postgres
+      spec:
+        containers:
+        - args:
+          - -c
+          - wal_level=logical
+          env:
+          - name: POSTGRES_DB
+            value: order
+          - name: POSTGRES_USER
+            value: order
+          - name: POSTGRES_PASSWORD
+            value: order
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - order
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:26Z"
+      lastUpdateTime: "2026-11-10T10:16:06Z"
+      message: ReplicaSet "order-postgres-5ccb7cf48f" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 4
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"order-redis","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"order-redis"}},"template":{"metadata":{"labels":{"app":"order-redis"}},"spec":{"containers":[{"image":"redis:7-alpine","name":"redis","ports":[{"containerPort":6379}],"readinessProbe":{"exec":{"command":["redis-cli","ping"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}]}}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    generation: 2
+    name: order-redis
+    namespace: gluon-local
+    resourceVersion: "799357"
+    uid: 0f7f7768-867d-4a12-b36d-0fd006b83269
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: order-redis
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: order-redis
+      spec:
+        containers:
+        - image: redis:7-alpine
+          imagePullPolicy: IfNotPresent
+          name: redis
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - redis-cli
+              - ping
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:26Z"
+      lastUpdateTime: "2026-10-30T13:23:23Z"
+      message: ReplicaSet "order-redis-654f8b74f6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "52"
+      meta.helm.sh/release-name: order-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:30Z"
+    generation: 52
+    labels:
+      app: order-service
+      app.kubernetes.io/managed-by: Helm
+    name: order-service
+    namespace: gluon-local
+    resourceVersion: "799314"
+    uid: 1c1ea367-5a8c-4ffe-9d67-70326781d7e0
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: order-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:21:29Z"
+        labels:
+          app: order-service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -XX:MaxRAMPercentage=40
+          - name: MALLOC_ARENA_MAX
+            value: "2"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: POSTGRES_HOST
+            value: order-postgres
+          - name: POSTGRES_DB
+            value: order
+          - name: POSTGRES_USER
+            value: order
+          - name: POSTGRES_PASSWORD
+            value: order
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            value: kafka:9092
+          - name: REDIS_URI
+            value: redis://order-redis:6379
+          - name: INVENTORY_SERVICE_URL
+            value: http://inventory-service:8080
+          - name: PAYMENT_SERVICE_URL
+            value: http://payment-service:8080
+          image: order-service:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: order-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:50:30Z"
+      lastUpdateTime: "2026-11-10T10:21:49Z"
+      message: ReplicaSet "order-service-84cc6d5cc8" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 52
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "4"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"payment-postgres","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"payment-postgres"}},"template":{"metadata":{"labels":{"app":"payment-postgres"}},"spec":{"containers":[{"args":["-c","wal_level=logical"],"env":[{"name":"POSTGRES_DB","value":"payment"},{"name":"POSTGRES_USER","value":"payment"},{"name":"POSTGRES_PASSWORD","value":"payment"}],"image":"postgres:16-alpine","name":"postgres","ports":[{"containerPort":5432}],"readinessProbe":{"exec":{"command":["pg_isready","-U","payment"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"data"}]}],"volumes":[{"emptyDir":{},"name":"data"}]}}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    generation: 4
+    name: payment-postgres
+    namespace: gluon-local
+    resourceVersion: "799369"
+    uid: 72bd27eb-0961-43d2-887e-e6a0cca5881b
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: payment-postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:15:57Z"
+        labels:
+          app: payment-postgres
+      spec:
+        containers:
+        - args:
+          - -c
+          - wal_level=logical
+          env:
+          - name: POSTGRES_DB
+            value: payment
+          - name: POSTGRES_USER
+            value: payment
+          - name: POSTGRES_PASSWORD
+            value: payment
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - payment
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:39:26Z"
+      lastUpdateTime: "2026-11-10T10:16:06Z"
+      message: ReplicaSet "payment-postgres-7c56556d8c" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 4
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "37"
+      meta.helm.sh/release-name: payment-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:51Z"
+    generation: 37
+    labels:
+      app: payment-service
+      app.kubernetes.io/managed-by: Helm
+    name: payment-service
+    namespace: gluon-local
+    resourceVersion: "799383"
+    uid: 21a5f3c5-c0a9-4ee2-8023-45f1043f2686
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: payment-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:22:47Z"
+        labels:
+          app: payment-service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -XX:MaxRAMPercentage=40
+          - name: MALLOC_ARENA_MAX
+            value: "2"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: POSTGRES_HOST
+            value: payment-postgres
+          - name: POSTGRES_DB
+            value: payment
+          - name: POSTGRES_USER
+            value: payment
+          - name: POSTGRES_PASSWORD
+            value: payment
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            value: kafka:9092
+          - name: PAYMENT_EXPIRY_SWEEP_INTERVAL
+            value: 5s
+          image: payment-service:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: payment-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-08T19:50:51Z"
+      lastUpdateTime: "2026-11-10T10:23:02Z"
+      message: ReplicaSet "payment-service-554bd47656" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 37
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"postgres-exporter","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"postgres-exporter"}},"template":{"metadata":{"labels":{"app":"postgres-exporter","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"args":["--config.file=/etc/postgres-exporter/postgres_exporter.yml"],"image":"quay.io/prometheuscommunity/postgres-exporter:v0.17.1","name":"postgres-exporter","ports":[{"containerPort":9187,"name":"http"}],"resources":{"limits":{"cpu":"200m","memory":"64Mi"},"requests":{"cpu":"20m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":65534},"volumeMounts":[{"mountPath":"/etc/postgres-exporter","name":"config"}]}],"volumes":[{"configMap":{"name":"postgres-exporter-config"},"name":"config"}]}}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: postgres-exporter
+    namespace: gluon-local
+    resourceVersion: "799342"
+    uid: b54028de-8726-46f9-8cec-11e0eb9377b8
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: postgres-exporter
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: postgres-exporter
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - args:
+          - --config.file=/etc/postgres-exporter/postgres_exporter.yml
+          image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1
+          imagePullPolicy: IfNotPresent
+          name: postgres-exporter
+          ports:
+          - containerPort: 9187
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 64Mi
+            requests:
+              cpu: 20m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/postgres-exporter
+            name: config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: postgres-exporter-config
+          name: config
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-03T13:52:16Z"
+      lastUpdateTime: "2026-11-03T13:52:21Z"
+      message: ReplicaSet "postgres-exporter-5bdfcbffbb" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"prometheus","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"prometheus"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"app":"prometheus","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"args":["--config.file=/etc/prometheus/prometheus.yml","--storage.tsdb.path=/prometheus","--storage.tsdb.retention.time=2d","--storage.tsdb.retention.size=1GB","--web.enable-lifecycle","--enable-feature=exemplar-storage"],"image":"prom/prometheus:v3.13.3","name":"prometheus","ports":[{"containerPort":9090,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/-/ready","port":9090},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"512Mi"}},"volumeMounts":[{"mountPath":"/etc/prometheus","name":"config"},{"mountPath":"/prometheus","name":"data"}]}],"serviceAccountName":"prometheus","volumes":[{"configMap":{"name":"prometheus-config-452k42bcc7"},"name":"config"},{"emptyDir":{"sizeLimit":"2Gi"},"name":"data"}]}}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: prometheus
+    namespace: gluon-local
+    resourceVersion: "799269"
+    uid: 9330d8a5-5c62-44fc-a5ab-bb776a0e007b
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: prometheus
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: prometheus
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - args:
+          - --config.file=/etc/prometheus/prometheus.yml
+          - --storage.tsdb.path=/prometheus
+          - --storage.tsdb.retention.time=2d
+          - --storage.tsdb.retention.size=1GB
+          - --web.enable-lifecycle
+          - --enable-feature=exemplar-storage
+          image: prom/prometheus:v3.13.3
+          imagePullPolicy: IfNotPresent
+          name: prometheus
+          ports:
+          - containerPort: 9090
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /-/ready
+              port: 9090
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/prometheus
+            name: config
+          - mountPath: /prometheus
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: prometheus
+        serviceAccountName: prometheus
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: prometheus-config-452k42bcc7
+          name: config
+        - emptyDir:
+            sizeLimit: 2Gi
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-03T13:52:16Z"
+      lastUpdateTime: "2026-11-04T20:45:41Z"
+      message: ReplicaSet "prometheus-95df9f45d" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:12:59Z"
+      lastUpdateTime: "2026-11-16T11:12:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"redis-exporter","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"redis-exporter"}},"template":{"metadata":{"labels":{"app":"redis-exporter","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"image":"oliver006/redis_exporter:v1.74.0","name":"redis-exporter","ports":[{"containerPort":9121,"name":"http"}],"resources":{"limits":{"cpu":"100m","memory":"32Mi"},"requests":{"cpu":"20m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":59000}}]}}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: redis-exporter
+    namespace: gluon-local
+    resourceVersion: "799365"
+    uid: e2095bab-6721-45e1-a25b-74018f79cbd9
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: redis-exporter
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: redis-exporter
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - image: oliver006/redis_exporter:v1.74.0
+          imagePullPolicy: IfNotPresent
+          name: redis-exporter
+          ports:
+          - containerPort: 9121
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 32Mi
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 59000
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-03T13:52:17Z"
+      lastUpdateTime: "2026-11-03T13:52:23Z"
+      message: ReplicaSet "redis-exporter-6b5cc8445" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"tempo","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"tempo"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"app":"tempo","app.kubernetes.io/part-of":"gluon-obs"}},"spec":{"containers":[{"args":["-config.file=/etc/tempo/tempo.yaml"],"env":[{"name":"GOMEMLIMIT","value":"200MiB"}],"image":"grafana/tempo:2.10.10","name":"tempo","ports":[{"containerPort":3200,"name":"http"},{"containerPort":4318,"name":"otlp-http"}],"readinessProbe":{"httpGet":{"path":"/ready","port":3200},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"50m","memory":"256Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001},"volumeMounts":[{"mountPath":"/etc/tempo","name":"config"},{"mountPath":"/var/tempo","name":"data"}]}],"volumes":[{"configMap":{"name":"tempo-config-2444b6g2td"},"name":"config"},{"emptyDir":{"sizeLimit":"1Gi"},"name":"data"}]}}}}
+    creationTimestamp: "2026-11-04T20:45:35Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: tempo
+    namespace: gluon-local
+    resourceVersion: "799334"
+    uid: 29ee8f1c-405e-4431-a736-a8c0605ab134
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: tempo
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: tempo
+          app.kubernetes.io/part-of: gluon-obs
+      spec:
+        containers:
+        - args:
+          - -config.file=/etc/tempo/tempo.yaml
+          env:
+          - name: GOMEMLIMIT
+            value: 200MiB
+          image: grafana/tempo:2.10.10
+          imagePullPolicy: IfNotPresent
+          name: tempo
+          ports:
+          - containerPort: 3200
+            name: http
+            protocol: TCP
+          - containerPort: 4318
+            name: otlp-http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ready
+              port: 3200
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/tempo
+            name: config
+          - mountPath: /var/tempo
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: tempo-config-2444b6g2td
+          name: config
+        - emptyDir:
+            sizeLimit: 1Gi
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-04T20:45:35Z"
+      lastUpdateTime: "2026-11-04T20:46:07Z"
+      message: ReplicaSet "tempo-8574b8448" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "3"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"user-postgres","namespace":"gluon-local"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"user-postgres"}},"template":{"metadata":{"labels":{"app":"user-postgres"}},"spec":{"containers":[{"args":["-c","wal_level=logical"],"env":[{"name":"POSTGRES_DB","value":"user"},{"name":"POSTGRES_USER","value":"user"},{"name":"POSTGRES_PASSWORD","value":"user"}],"image":"postgres:16-alpine","name":"postgres","ports":[{"containerPort":5432}],"readinessProbe":{"exec":{"command":["pg_isready","-U","user"]},"initialDelaySeconds":2,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"data"}]}],"volumes":[{"emptyDir":{},"name":"data"}]}}}}
+    creationTimestamp: "2026-10-28T12:03:24Z"
+    generation: 3
+    name: user-postgres
+    namespace: gluon-local
+    resourceVersion: "799328"
+    uid: ded299f9-d0e1-4268-a926-d94be40861c9
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: user-postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-10T10:15:57Z"
+        labels:
+          app: user-postgres
+      spec:
+        containers:
+        - args:
+          - -c
+          - wal_level=logical
+          env:
+          - name: POSTGRES_DB
+            value: user
+          - name: POSTGRES_USER
+            value: user
+          - name: POSTGRES_PASSWORD
+            value: user
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - user
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-28T12:03:24Z"
+      lastUpdateTime: "2026-11-10T10:16:06Z"
+      message: ReplicaSet "user-postgres-58dc7fc668" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "30"
+      meta.helm.sh/release-name: user-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-28T12:28:15Z"
+    generation: 30
+    labels:
+      app: user-service
+      app.kubernetes.io/managed-by: Helm
+    name: user-service
+    namespace: gluon-local
+    resourceVersion: "799349"
+    uid: 23782935-43d8-4f06-9a70-786ea4a6e10b
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: user-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2026-11-14T18:50:02Z"
+        labels:
+          app: user-service
+      spec:
+        containers:
+        - env:
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://tempo:4318
+          - name: POSTGRES_HOST
+            value: user-postgres
+          - name: POSTGRES_DB
+            value: user
+          - name: POSTGRES_USER
+            value: user
+          - name: POSTGRES_PASSWORD
+            value: user
+          image: user-service-rs:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: user-service
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9090
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: false
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-28T12:28:15Z"
+      lastUpdateTime: "2026-11-14T18:50:12Z"
+      message: ReplicaSet "user-service-cd878ccdb" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-11-16T11:13:00Z"
+      lastUpdateTime: "2026-11-16T11:13:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 30
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+kind: List
+metadata:
+  resourceVersion: ""

@@ -1,0 +1,1094 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"alertmanager","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":9093,"targetPort":9093}],"selector":{"app":"alertmanager"},"type":"LoadBalancer"}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: alertmanager
+    namespace: gluon-local
+    resourceVersion: "799255"
+    uid: a7c48daf-58f7-478b-be40-80f259d8be5b
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 192.168.194.201
+    clusterIPs:
+    - 192.168.194.201
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 30368
+      port: 9093
+      protocol: TCP
+      targetPort: 9093
+    selector:
+      app: alertmanager
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 192.168.139.2
+        ipMode: VIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"apicurio-registry","namespace":"gluon-local"},"spec":{"ports":[{"port":8080,"targetPort":8080}],"selector":{"app":"apicurio-registry"}}}
+    creationTimestamp: "2026-10-25T08:35:43Z"
+    name: apicurio-registry
+    namespace: gluon-local
+    resourceVersion: "400914"
+    uid: 2ded44cd-9c63-4f20-9cb6-06ce32dc14de
+  spec:
+    clusterIP: 192.168.194.184
+    clusterIPs:
+    - 192.168.194.184
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: apicurio-registry
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"apicurio-registry-ui","namespace":"gluon-local"},"spec":{"ports":[{"port":8080,"targetPort":8080}],"selector":{"app":"apicurio-registry-ui"}}}
+    creationTimestamp: "2026-10-25T23:19:09Z"
+    name: apicurio-registry-ui
+    namespace: gluon-local
+    resourceVersion: "415363"
+    uid: 99f50cae-7e37-4436-9805-b3c05f145334
+  spec:
+    clusterIP: 192.168.194.160
+    clusterIPs:
+    - 192.168.194.160
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: apicurio-registry-ui
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"cadvisor","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":8080}],"selector":{"app":"cadvisor"}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: cadvisor
+    namespace: gluon-local
+    resourceVersion: "608841"
+    uid: 8d09dec6-1897-4be4-8dda-2a58efb81141
+  spec:
+    clusterIP: 192.168.194.200
+    clusterIPs:
+    - 192.168.194.200
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: cadvisor
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"cart-redis","namespace":"gluon-local"},"spec":{"ports":[{"port":6379,"targetPort":6379}],"selector":{"app":"cart-redis"}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    name: cart-redis
+    namespace: gluon-local
+    resourceVersion: "541"
+    uid: 2a14a117-3a04-4893-8a4a-e54ce4285afb
+  spec:
+    clusterIP: 192.168.194.207
+    clusterIPs:
+    - 192.168.194.207
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
+    selector:
+      app: cart-redis
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: cart-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:07Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: cart-service
+    namespace: gluon-local
+    resourceVersion: "1040"
+    uid: a2855ab6-666e-4179-b21e-f067e1142610
+  spec:
+    clusterIP: 192.168.194.186
+    clusterIPs:
+    - 192.168.194.186
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: cart-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"catalog-postgres","namespace":"gluon-local"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"catalog-postgres"}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    name: catalog-postgres
+    namespace: gluon-local
+    resourceVersion: "505"
+    uid: 2e2c9303-5f88-4079-984f-99b0b5250a99
+  spec:
+    clusterIP: 192.168.194.161
+    clusterIPs:
+    - 192.168.194.161
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: catalog-postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"catalog-redis","namespace":"gluon-local"},"spec":{"ports":[{"port":6379,"targetPort":6379}],"selector":{"app":"catalog-redis"}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    name: catalog-redis
+    namespace: gluon-local
+    resourceVersion: "550"
+    uid: f25e331a-c720-4ef1-a12d-9fd6df79fe10
+  spec:
+    clusterIP: 192.168.194.154
+    clusterIPs:
+    - 192.168.194.154
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
+    selector:
+      app: catalog-redis
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: catalog-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:49:38Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: catalog-service
+    namespace: gluon-local
+    resourceVersion: "988"
+    uid: b245faf3-5257-4a97-b86f-37ee37fafde6
+  spec:
+    clusterIP: 192.168.194.228
+    clusterIPs:
+    - 192.168.194.228
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: catalog-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"elasticsearch","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":9200,"targetPort":9200}],"selector":{"app":"elasticsearch"}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: elasticsearch
+    namespace: gluon-local
+    resourceVersion: "608847"
+    uid: 3aae7db5-4e02-4b9a-8cb6-92fa3b7fba01
+  spec:
+    clusterIP: 192.168.194.194
+    clusterIPs:
+    - 192.168.194.194
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 9200
+      protocol: TCP
+      targetPort: 9200
+    selector:
+      app: elasticsearch
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"fulfilment-postgres","namespace":"gluon-local"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"fulfilment-postgres"}}}
+    creationTimestamp: "2026-10-28T14:29:37Z"
+    name: fulfilment-postgres
+    namespace: gluon-local
+    resourceVersion: "470499"
+    uid: c3ddd9bf-4515-415b-8906-4cfc3b6a7075
+  spec:
+    clusterIP: 192.168.194.148
+    clusterIPs:
+    - 192.168.194.148
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: fulfilment-postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: fulfilment-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-28T14:33:00Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: fulfilment-service
+    namespace: gluon-local
+    resourceVersion: "470668"
+    uid: f3fd127a-9594-42da-a078-98be11707fb5
+  spec:
+    clusterIP: 192.168.194.237
+    clusterIPs:
+    - 192.168.194.237
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: fulfilment-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs","gluon-obs/ui":"grafana"},"name":"grafana","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":3000,"targetPort":3000}],"selector":{"app":"grafana"},"type":"LoadBalancer"}}
+    creationTimestamp: "2026-11-05T14:58:55Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      gluon-obs/ui: grafana
+    name: grafana
+    namespace: gluon-local
+    resourceVersion: "799307"
+    uid: 089d64f4-5a85-4474-8b87-14c668360d18
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 192.168.194.234
+    clusterIPs:
+    - 192.168.194.234
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 31876
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      app: grafana
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 192.168.139.2
+        ipMode: VIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"inventory-postgres","namespace":"gluon-local"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"inventory-postgres"}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    name: inventory-postgres
+    namespace: gluon-local
+    resourceVersion: "515"
+    uid: 752ae419-909d-4837-830a-6072c6d3c1eb
+  spec:
+    clusterIP: 192.168.194.164
+    clusterIPs:
+    - 192.168.194.164
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: inventory-postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: inventory-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:42Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: inventory-service
+    namespace: gluon-local
+    resourceVersion: "1138"
+    uid: 00fddf12-9c5d-47ae-b7c6-85e5e1cb6c3e
+  spec:
+    clusterIP: 192.168.194.156
+    clusterIPs:
+    - 192.168.194.156
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: inventory-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"kafka","namespace":"gluon-local"},"spec":{"ports":[{"port":9092,"targetPort":9092}],"selector":{"app":"kafka"}}}
+    creationTimestamp: "2026-10-08T19:39:36Z"
+    name: kafka
+    namespace: gluon-local
+    resourceVersion: "634"
+    uid: 0de071ec-8e60-4130-8b64-bb8cf1bb4c62
+  spec:
+    clusterIP: 192.168.194.151
+    clusterIPs:
+    - 192.168.194.151
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 9092
+      protocol: TCP
+      targetPort: 9092
+    selector:
+      app: kafka
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"kafka-connect","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":8083,"targetPort":8083},{"name":"jmx","port":9404,"targetPort":9404}],"selector":{"app":"kafka-connect"}}}
+    creationTimestamp: "2026-10-15T19:40:21Z"
+    name: kafka-connect
+    namespace: gluon-local
+    resourceVersion: "518647"
+    uid: fecd8ce3-820b-4072-955d-4949b85fd510
+  spec:
+    clusterIP: 192.168.194.187
+    clusterIPs:
+    - 192.168.194.187
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8083
+      protocol: TCP
+      targetPort: 8083
+    - name: jmx
+      port: 9404
+      protocol: TCP
+      targetPort: 9404
+    selector:
+      app: kafka-connect
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"kafka-exporter","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":9308,"targetPort":9308}],"selector":{"app":"kafka-exporter"}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: kafka-exporter
+    namespace: gluon-local
+    resourceVersion: "608865"
+    uid: 6f795124-484c-48d6-b6f5-65c95dd0e423
+  spec:
+    clusterIP: 192.168.194.250
+    clusterIPs:
+    - 192.168.194.250
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 9308
+      protocol: TCP
+      targetPort: 9308
+    selector:
+      app: kafka-exporter
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs","gluon-obs/ui":"kibana"},"name":"kibana","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":5601,"targetPort":5601}],"selector":{"app":"kibana"},"type":"LoadBalancer"}}
+    creationTimestamp: "2026-11-05T14:57:49Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+      gluon-obs/ui: kibana
+    name: kibana
+    namespace: gluon-local
+    resourceVersion: "799406"
+    uid: 4bd69ebe-a6e3-416d-8242-d968215a7f72
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 192.168.194.152
+    clusterIPs:
+    - 192.168.194.152
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 31053
+      port: 5601
+      protocol: TCP
+      targetPort: 5601
+    selector:
+      app: kibana
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 192.168.139.2
+        ipMode: VIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"kube-state-metrics","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":8080}],"selector":{"app":"kube-state-metrics"}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: kube-state-metrics
+    namespace: gluon-local
+    resourceVersion: "608886"
+    uid: b2ebf324-a25d-465f-b544-5962630f8db2
+  spec:
+    clusterIP: 192.168.194.172
+    clusterIPs:
+    - 192.168.194.172
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: kube-state-metrics
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"notification-postgres","namespace":"gluon-local"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"notification-postgres"}}}
+    creationTimestamp: "2026-11-02T17:10:51Z"
+    name: notification-postgres
+    namespace: gluon-local
+    resourceVersion: "583289"
+    uid: 6027947d-b5cb-4d81-976a-8b3efee3f035
+  spec:
+    clusterIP: 192.168.194.244
+    clusterIPs:
+    - 192.168.194.244
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: notification-postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: notification-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:51:02Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: notification-service
+    namespace: gluon-local
+    resourceVersion: "1236"
+    uid: 934f1ee3-388e-4723-bfa3-6f0f3f549611
+  spec:
+    clusterIP: 192.168.194.239
+    clusterIPs:
+    - 192.168.194.239
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: notification-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"order-postgres","namespace":"gluon-local"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"order-postgres"}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    name: order-postgres
+    namespace: gluon-local
+    resourceVersion: "523"
+    uid: 67c2a797-14a8-48ae-8395-5ec319ea7a3b
+  spec:
+    clusterIP: 192.168.194.183
+    clusterIPs:
+    - 192.168.194.183
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: order-postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"order-redis","namespace":"gluon-local"},"spec":{"ports":[{"port":6379,"targetPort":6379}],"selector":{"app":"order-redis"}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    name: order-redis
+    namespace: gluon-local
+    resourceVersion: "557"
+    uid: 824681f1-8db9-4d0f-9aab-1fdcb755f6c4
+  spec:
+    clusterIP: 192.168.194.243
+    clusterIPs:
+    - 192.168.194.243
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
+    selector:
+      app: order-redis
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: order-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:30Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: order-service
+    namespace: gluon-local
+    resourceVersion: "1098"
+    uid: 3b6c157b-7482-4182-92bf-1a9e98de637a
+  spec:
+    clusterIP: 192.168.194.171
+    clusterIPs:
+    - 192.168.194.171
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: order-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"payment-postgres","namespace":"gluon-local"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"payment-postgres"}}}
+    creationTimestamp: "2026-10-08T19:39:26Z"
+    name: payment-postgres
+    namespace: gluon-local
+    resourceVersion: "533"
+    uid: 7f697bfe-8c5a-4236-a17f-c04422a28fdb
+  spec:
+    clusterIP: 192.168.194.193
+    clusterIPs:
+    - 192.168.194.193
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: payment-postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: payment-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-08T19:50:51Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: payment-service
+    namespace: gluon-local
+    resourceVersion: "1178"
+    uid: 062747c2-9ccf-4952-9de4-d2c1e7e69060
+  spec:
+    clusterIP: 192.168.194.253
+    clusterIPs:
+    - 192.168.194.253
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: payment-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"postgres-exporter","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":9187,"targetPort":9187}],"selector":{"app":"postgres-exporter"}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: postgres-exporter
+    namespace: gluon-local
+    resourceVersion: "608897"
+    uid: 54ec900d-b8c7-477a-8a7e-469092fc4cc0
+  spec:
+    clusterIP: 192.168.194.240
+    clusterIPs:
+    - 192.168.194.240
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 9187
+      protocol: TCP
+      targetPort: 9187
+    selector:
+      app: postgres-exporter
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"prometheus","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":9092,"targetPort":9090}],"selector":{"app":"prometheus"},"type":"LoadBalancer"}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: prometheus
+    namespace: gluon-local
+    resourceVersion: "799389"
+    uid: 59c4575f-e79c-41d6-8a5a-3f2778e750bc
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 192.168.194.251
+    clusterIPs:
+    - 192.168.194.251
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 30102
+      port: 9092
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: prometheus
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 192.168.139.2
+        ipMode: VIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"redis-exporter","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":9121,"targetPort":9121}],"selector":{"app":"redis-exporter"}}}
+    creationTimestamp: "2026-11-03T13:52:16Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: redis-exporter
+    namespace: gluon-local
+    resourceVersion: "608918"
+    uid: e2e187f8-8430-45b1-a9c5-6705b9aa87d0
+  spec:
+    clusterIP: 192.168.194.192
+    clusterIPs:
+    - 192.168.194.192
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 9121
+      protocol: TCP
+      targetPort: 9121
+    selector:
+      app: redis-exporter
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"gluon-obs"},"name":"tempo","namespace":"gluon-local"},"spec":{"ports":[{"name":"http","port":3200,"targetPort":3200},{"name":"otlp-http","port":4318,"targetPort":4318}],"selector":{"app":"tempo"}}}
+    creationTimestamp: "2026-11-04T20:45:34Z"
+    labels:
+      app.kubernetes.io/part-of: gluon-obs
+    name: tempo
+    namespace: gluon-local
+    resourceVersion: "647496"
+    uid: fe1c2f2c-9c2d-49f3-82a0-b4aa0e51ac57
+  spec:
+    clusterIP: 192.168.194.182
+    clusterIPs:
+    - 192.168.194.182
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 3200
+      protocol: TCP
+      targetPort: 3200
+    - name: otlp-http
+      port: 4318
+      protocol: TCP
+      targetPort: 4318
+    selector:
+      app: tempo
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"user-postgres","namespace":"gluon-local"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"user-postgres"}}}
+    creationTimestamp: "2026-10-28T12:03:24Z"
+    name: user-postgres
+    namespace: gluon-local
+    resourceVersion: "466923"
+    uid: c12fa038-3ee6-42c4-8810-3d537fdfaed4
+  spec:
+    clusterIP: 192.168.194.226
+    clusterIPs:
+    - 192.168.194.226
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: user-postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: user-service
+      meta.helm.sh/release-namespace: gluon-local
+    creationTimestamp: "2026-10-28T12:28:15Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    name: user-service
+    namespace: gluon-local
+    resourceVersion: "467055"
+    uid: 5eb252b5-433b-48c9-8ccd-67b5db95ac8c
+  spec:
+    clusterIP: 192.168.194.208
+    clusterIPs:
+    - 192.168.194.208
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      app: user-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""

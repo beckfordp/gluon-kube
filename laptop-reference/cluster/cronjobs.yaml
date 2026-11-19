@@ -1,0 +1,237 @@
+apiVersion: v1
+items:
+- apiVersion: batch/v1
+  kind: CronJob
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"batch/v1","kind":"CronJob","metadata":{"annotations":{},"name":"fulfilment-outbox-cleanup","namespace":"gluon-local"},"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"command":["psql","-h","fulfilment-postgres","-U","fulfilment","-d","fulfilment","-c","DELETE FROM outbox_events WHERE created_at \u003c now() - interval '1 hour'"],"env":[{"name":"PGPASSWORD","value":"fulfilment"}],"image":"postgres:16-alpine","name":"cleanup","resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}],"restartPolicy":"OnFailure"}}}},"schedule":"0 * * * *"}}
+    creationTimestamp: "2026-10-28T14:29:37Z"
+    generation: 2
+    name: fulfilment-outbox-cleanup
+    namespace: gluon-local
+    resourceVersion: "802222"
+    uid: 55abde8d-8d04-43c0-809c-1d1ffa995b0d
+  spec:
+    concurrencyPolicy: Allow
+    failedJobsHistoryLimit: 1
+    jobTemplate:
+      metadata: {}
+      spec:
+        template:
+          metadata: {}
+          spec:
+            containers:
+            - command:
+              - psql
+              - -h
+              - fulfilment-postgres
+              - -U
+              - fulfilment
+              - -d
+              - fulfilment
+              - -c
+              - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+              env:
+              - name: PGPASSWORD
+                value: fulfilment
+              image: postgres:16-alpine
+              imagePullPolicy: IfNotPresent
+              name: cleanup
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 64Mi
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            dnsPolicy: ClusterFirst
+            restartPolicy: OnFailure
+            schedulerName: default-scheduler
+            securityContext: {}
+            terminationGracePeriodSeconds: 30
+    schedule: 0 * * * *
+    successfulJobsHistoryLimit: 3
+    suspend: false
+  status:
+    lastScheduleTime: "2026-11-16T13:00:00Z"
+    lastSuccessfulTime: "2026-11-16T13:00:06Z"
+- apiVersion: batch/v1
+  kind: CronJob
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"batch/v1","kind":"CronJob","metadata":{"annotations":{},"name":"order-outbox-cleanup","namespace":"gluon-local"},"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"command":["psql","-h","order-postgres","-U","order","-d","order","-c","DELETE FROM outbox_events WHERE created_at \u003c now() - interval '1 hour'"],"env":[{"name":"PGPASSWORD","value":"order"}],"image":"postgres:16-alpine","name":"cleanup","resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}],"restartPolicy":"OnFailure"}}}},"schedule":"0 * * * *"}}
+    creationTimestamp: "2026-10-15T19:40:21Z"
+    generation: 2
+    name: order-outbox-cleanup
+    namespace: gluon-local
+    resourceVersion: "802241"
+    uid: 2d24ca6a-af3a-42e7-9097-5812d0503129
+  spec:
+    concurrencyPolicy: Allow
+    failedJobsHistoryLimit: 1
+    jobTemplate:
+      metadata: {}
+      spec:
+        template:
+          metadata: {}
+          spec:
+            containers:
+            - command:
+              - psql
+              - -h
+              - order-postgres
+              - -U
+              - order
+              - -d
+              - order
+              - -c
+              - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+              env:
+              - name: PGPASSWORD
+                value: order
+              image: postgres:16-alpine
+              imagePullPolicy: IfNotPresent
+              name: cleanup
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 64Mi
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            dnsPolicy: ClusterFirst
+            restartPolicy: OnFailure
+            schedulerName: default-scheduler
+            securityContext: {}
+            terminationGracePeriodSeconds: 30
+    schedule: 0 * * * *
+    successfulJobsHistoryLimit: 3
+    suspend: false
+  status:
+    lastScheduleTime: "2026-11-16T13:00:00Z"
+    lastSuccessfulTime: "2026-11-16T13:00:06Z"
+- apiVersion: batch/v1
+  kind: CronJob
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"batch/v1","kind":"CronJob","metadata":{"annotations":{},"name":"payment-outbox-cleanup","namespace":"gluon-local"},"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"command":["psql","-h","payment-postgres","-U","payment","-d","payment","-c","DELETE FROM outbox_events WHERE created_at \u003c now() - interval '1 hour'"],"env":[{"name":"PGPASSWORD","value":"payment"}],"image":"postgres:16-alpine","name":"cleanup","resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}],"restartPolicy":"OnFailure"}}}},"schedule":"0 * * * *"}}
+    creationTimestamp: "2026-10-15T19:40:21Z"
+    generation: 2
+    name: payment-outbox-cleanup
+    namespace: gluon-local
+    resourceVersion: "802238"
+    uid: 21033f4f-bc00-4909-bc04-151ae70a8745
+  spec:
+    concurrencyPolicy: Allow
+    failedJobsHistoryLimit: 1
+    jobTemplate:
+      metadata: {}
+      spec:
+        template:
+          metadata: {}
+          spec:
+            containers:
+            - command:
+              - psql
+              - -h
+              - payment-postgres
+              - -U
+              - payment
+              - -d
+              - payment
+              - -c
+              - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+              env:
+              - name: PGPASSWORD
+                value: payment
+              image: postgres:16-alpine
+              imagePullPolicy: IfNotPresent
+              name: cleanup
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 64Mi
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            dnsPolicy: ClusterFirst
+            restartPolicy: OnFailure
+            schedulerName: default-scheduler
+            securityContext: {}
+            terminationGracePeriodSeconds: 30
+    schedule: 0 * * * *
+    successfulJobsHistoryLimit: 3
+    suspend: false
+  status:
+    lastScheduleTime: "2026-11-16T13:00:00Z"
+    lastSuccessfulTime: "2026-11-16T13:00:06Z"
+- apiVersion: batch/v1
+  kind: CronJob
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"batch/v1","kind":"CronJob","metadata":{"annotations":{},"name":"user-outbox-cleanup","namespace":"gluon-local"},"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"command":["psql","-h","user-postgres","-U","user","-d","user","-c","DELETE FROM outbox_events WHERE created_at \u003c now() - interval '1 hour'"],"env":[{"name":"PGPASSWORD","value":"user"}],"image":"postgres:16-alpine","name":"cleanup","resources":{"limits":{"cpu":"100m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}],"restartPolicy":"OnFailure"}}}},"schedule":"0 * * * *"}}
+    creationTimestamp: "2026-10-28T12:03:23Z"
+    generation: 2
+    name: user-outbox-cleanup
+    namespace: gluon-local
+    resourceVersion: "802211"
+    uid: a9203870-b916-4977-adcf-59ed301d83ee
+  spec:
+    concurrencyPolicy: Allow
+    failedJobsHistoryLimit: 1
+    jobTemplate:
+      metadata: {}
+      spec:
+        template:
+          metadata: {}
+          spec:
+            containers:
+            - command:
+              - psql
+              - -h
+              - user-postgres
+              - -U
+              - user
+              - -d
+              - user
+              - -c
+              - DELETE FROM outbox_events WHERE created_at < now() - interval '1 hour'
+              env:
+              - name: PGPASSWORD
+                value: user
+              image: postgres:16-alpine
+              imagePullPolicy: IfNotPresent
+              name: cleanup
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 64Mi
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            dnsPolicy: ClusterFirst
+            restartPolicy: OnFailure
+            schedulerName: default-scheduler
+            securityContext: {}
+            terminationGracePeriodSeconds: 30
+    schedule: 0 * * * *
+    successfulJobsHistoryLimit: 3
+    suspend: false
+  status:
+    lastScheduleTime: "2026-11-16T13:00:00Z"
+    lastSuccessfulTime: "2026-11-16T13:00:06Z"
+kind: List
+metadata:
+  resourceVersion: ""

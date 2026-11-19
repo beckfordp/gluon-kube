@@ -35,9 +35,10 @@ GK-3.1–GK-3.7. Nothing runs yet: this is the desired state, read exactly.
 ## The reference (GK-3.5, GK-3.6)
 `helm template` output captured on the laptop (`scripts/capture-laptop-reference.sh`)
 goes into `tests/fixtures/helm-template/` with its provenance; a test compares
-`gluon-kube template` with each capture as parsed documents. Until it arrives, the
-renderer is tested against expectations derived by hand from Helm's documented
-behaviour, named as such, and the comparison test skips saying it waits for GK-3.5.
+`gluon-kube template` with each capture as parsed documents. *2026-11-18: the captures
+are in (GK-3.5, 2026-11-16), so the comparison runs from the start; the
+hand-derived-expectations fallback is dropped. Unit tests still take their
+expectations from Helm's and Go's documented behaviour.*
 
 ## Acceptance (agreed before the work; `bin/verify-complete-GK-3.sh` in gluon)
 1. `tools/gluon-kube` `scripts/ci.sh` green (coverage ≥ 80%)

@@ -1,0 +1,37 @@
+LAST SEEN   TYPE     REASON             OBJECT                                         MESSAGE
+5m42s       Normal   Scheduled          pod/payment-outbox-cleanup-29913900-dvlgw      Successfully assigned gluon-local/payment-outbox-cleanup-29913900-dvlgw to orbstack
+5m42s       Normal   Scheduled          pod/fulfilment-outbox-cleanup-29913900-qhhf9   Successfully assigned gluon-local/fulfilment-outbox-cleanup-29913900-qhhf9 to orbstack
+5m42s       Normal   Scheduled          pod/user-outbox-cleanup-29913900-t5dtl         Successfully assigned gluon-local/user-outbox-cleanup-29913900-t5dtl to orbstack
+5m42s       Normal   Scheduled          pod/order-outbox-cleanup-29913900-5cbkd        Successfully assigned gluon-local/order-outbox-cleanup-29913900-5cbkd to orbstack
+5m42s       Normal   SuccessfulCreate   job/order-outbox-cleanup-29913900              Created pod: order-outbox-cleanup-29913900-5cbkd
+5m42s       Normal   SuccessfulCreate   cronjob/user-outbox-cleanup                    Created job user-outbox-cleanup-29913900
+5m42s       Normal   SuccessfulCreate   job/user-outbox-cleanup-29913900               Created pod: user-outbox-cleanup-29913900-t5dtl
+5m42s       Normal   SuccessfulCreate   job/fulfilment-outbox-cleanup-29913900         Created pod: fulfilment-outbox-cleanup-29913900-qhhf9
+5m42s       Normal   SuccessfulCreate   cronjob/fulfilment-outbox-cleanup              Created job fulfilment-outbox-cleanup-29913900
+5m42s       Normal   SuccessfulCreate   cronjob/payment-outbox-cleanup                 Created job payment-outbox-cleanup-29913900
+5m42s       Normal   SuccessfulCreate   job/payment-outbox-cleanup-29913900            Created pod: payment-outbox-cleanup-29913900-dvlgw
+5m42s       Normal   SuccessfulCreate   cronjob/order-outbox-cleanup                   Created job order-outbox-cleanup-29913900
+5m41s       Normal   Pulled             pod/fulfilment-outbox-cleanup-29913900-qhhf9   Container image "postgres:16-alpine" already present on machine and can be accessed by the pod
+5m41s       Normal   Pulled             pod/user-outbox-cleanup-29913900-t5dtl         Container image "postgres:16-alpine" already present on machine and can be accessed by the pod
+5m41s       Normal   Pulled             pod/payment-outbox-cleanup-29913900-dvlgw      Container image "postgres:16-alpine" already present on machine and can be accessed by the pod
+5m41s       Normal   Pulled             pod/order-outbox-cleanup-29913900-5cbkd        Container image "postgres:16-alpine" already present on machine and can be accessed by the pod
+5m40s       Normal   Created            pod/user-outbox-cleanup-29913900-t5dtl         Container created
+5m40s       Normal   Created            pod/fulfilment-outbox-cleanup-29913900-qhhf9   Container created
+5m40s       Normal   Created            pod/order-outbox-cleanup-29913900-5cbkd        Container created
+5m40s       Normal   Started            pod/fulfilment-outbox-cleanup-29913900-qhhf9   Container started
+5m40s       Normal   Started            pod/user-outbox-cleanup-29913900-t5dtl         Container started
+5m40s       Normal   Created            pod/payment-outbox-cleanup-29913900-dvlgw      Container created
+5m40s       Normal   Started            pod/payment-outbox-cleanup-29913900-dvlgw      Container started
+5m40s       Normal   Started            pod/order-outbox-cleanup-29913900-5cbkd        Container started
+5m36s       Normal   Completed          job/payment-outbox-cleanup-29913900            Job completed
+5m36s       Normal   SuccessfulDelete   cronjob/payment-outbox-cleanup                 Deleted job payment-outbox-cleanup-29913720
+5m36s       Normal   SawCompletedJob    cronjob/payment-outbox-cleanup                 Saw completed job: payment-outbox-cleanup-29913900, condition: Complete
+5m36s       Normal   SuccessfulDelete   cronjob/fulfilment-outbox-cleanup              Deleted job fulfilment-outbox-cleanup-29913720
+5m36s       Normal   Completed          job/fulfilment-outbox-cleanup-29913900         Job completed
+5m36s       Normal   SawCompletedJob    cronjob/fulfilment-outbox-cleanup              Saw completed job: fulfilment-outbox-cleanup-29913900, condition: Complete
+5m36s       Normal   SuccessfulDelete   cronjob/order-outbox-cleanup                   Deleted job order-outbox-cleanup-29913720
+5m36s       Normal   SawCompletedJob    cronjob/order-outbox-cleanup                   Saw completed job: order-outbox-cleanup-29913900, condition: Complete
+5m36s       Normal   Completed          job/user-outbox-cleanup-29913900               Job completed
+5m36s       Normal   Completed          job/order-outbox-cleanup-29913900              Job completed
+5m36s       Normal   SuccessfulDelete   cronjob/user-outbox-cleanup                    Deleted job user-outbox-cleanup-29913720
+5m36s       Normal   SawCompletedJob    cronjob/user-outbox-cleanup                    Saw completed job: user-outbox-cleanup-29913900, condition: Complete

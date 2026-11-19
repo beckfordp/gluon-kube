@@ -82,11 +82,12 @@ def test_apply_refuses_malformed_input_with_exit_2(
     assert capsys.readouterr().err == f"gluon-kube: error: {manifests}#1: not a mapping\n"
 
 
-def test_apply_without_dry_run_needs_the_runtime(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+def test_apply_without_dry_run_needs_a_cluster(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    assert main(["apply", "-f", str(tmp_path)]) == 2
-    assert "the runtime comes in GK-4" in capsys.readouterr().err
+    monkeypatch.setenv("GLUON_KUBE_STATE", str(tmp_path / "state"))
+    assert main(["apply", "-f", str(tmp_path)]) == 1
+    assert "no cluster running: gluon-kube cluster start" in capsys.readouterr().err
 
 
 def test_an_unknown_option_is_a_usage_error(capsys: pytest.CaptureFixture[str]) -> None:
@@ -94,3 +95,30 @@ def test_an_unknown_option_is_a_usage_error(capsys: pytest.CaptureFixture[str]) 
         main(["apply", "--dry-run", "-f", "x.yaml", "--no-such-option"])
     assert exit_info.value.code == 2
     assert "unrecognized arguments: --no-such-option" in capsys.readouterr().err
+
+
+def write_chart(root: Path, template: str) -> Path:
+    (root / "templates").mkdir(parents=True)
+    (root / "Chart.yaml").write_text("apiVersion: v2\nname: c\nversion: 0.1.0\n")
+    (root / "values.yaml").write_text("port: 1\n")
+    (root / "templates" / "cm.yaml").write_text(template)
+    return root
+
+
+def test_template_prints_helm_output(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    root = write_chart(tmp_path / "c", "kind: ConfigMap\nname: {{ .Release.Name }}\n")
+    values = tmp_path / "v.yaml"
+    values.write_text("port: 2\n")
+    assert main(["template", "r", str(root), "-f", str(values), "--namespace", "gluon-local"]) == 0
+    assert capsys.readouterr().out == (
+        "---\n# Source: c/templates/cm.yaml\nkind: ConfigMap\nname: r\n"
+    )
+
+
+def test_template_refuses_unsupported_constructs_with_exit_2(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = write_chart(tmp_path / "c", 'kind: ConfigMap\nmetadata:\n  name: {{ include "x" . }}\n')
+    assert main(["template", "r", str(root)]) == 2
+    err = capsys.readouterr().err
+    assert err.startswith("gluon-kube: error: c/templates/cm.yaml: line 3: 'include'")

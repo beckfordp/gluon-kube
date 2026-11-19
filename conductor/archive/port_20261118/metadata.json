@@ -1,0 +1,8 @@
+{
+  "track_id": "port_20261118",
+  "type": "feature",
+  "status": "completed",
+  "created_at": "2026-11-18T14:50:00Z",
+  "updated_at": "2026-11-18T15:15:00Z",
+  "description": "GK-6: a Rust port from its chart and values file: the <port>-rs image recipe from its Dockerfile, gluon-kube build, helm upgrade --install, rollout, gluon-kube up (bin/k8s-local-up's sequence), the implementation switch; exec through the node (gluon ADR 0030 decisions 4 and 5)"
+}

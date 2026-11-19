@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# gluon-kube's stand-in for iproute2's `ip addr` (the sandbox has no `ip`), for
+# debezium/connect's docker-entrypoint.sh, which finds its HOST_NAME with
+#   ip addr | grep 'BROADCAST' -A2 | tail -n1 | awk '{print $2}' | cut -f1 -d'/'
+# Prints lo and eth0 as `ip addr` does, eth0 with the pod's IP.
+case "${1:-}" in
+  a | addr | address) ;;
+  *) echo "gluon-kube's ip stand-in only does 'ip addr'" >&2; exit 1 ;;
+esac
+ip=$(hostname -i | cut -d' ' -f1)
+cat << OUT
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 02:42:0a:f4:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet $ip/24 brd 10.244.0.255 scope global eth0
+       valid_lft forever preferred_lft forever
+OUT
