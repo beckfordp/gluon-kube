@@ -64,6 +64,15 @@ def kind_of(word: str) -> str:
     return kind
 
 
+API_GROUPS = {"Deployment": "apps", "Job": "batch", "CronJob": "batch"}
+
+
+def resource_name(kind: str, name: str) -> str:
+    """kubectl's `-o name`: `deployment.apps/x`, `service/x`."""
+    group = API_GROUPS.get(kind)
+    return f"{kind.lower()}{'.' + group if group else ''}/{name}"
+
+
 def split_ref(ref: str, kind: str | None = None) -> tuple[str, str]:
     """`deploy/x` or (`deploy`, `x`): kind and name."""
     if "/" in ref:
@@ -246,7 +255,7 @@ def get(kind_word: str, name: str | None, output: str | None) -> int:
         if name is not None and not pods:
             raise ClusterError(f'pods "{name}" not found')
         if output == "name":
-            print("\n".join(f"pod/{p['name']}" for p in pods))
+            print("\n".join(resource_name("Pod", str(p["name"])) for p in pods))
             return 0
         head = ["NAME", "READY", "STATUS", "RESTARTS", "AGE"] + (["IP"] if output else [])
         rows = [
@@ -278,6 +287,9 @@ def get(kind_word: str, name: str | None, output: str | None) -> int:
     names = [n for k, n in objects if k == kind and (name is None or n == name)]
     if name is not None and not names:
         raise ClusterError(f'{kind_word} "{name}" not found')
+    if output == "name":
+        print("\n".join(resource_name(kind, n) for n in names))
+        return 0
     print("\n".join(["NAME", *names]))
     return 0
 

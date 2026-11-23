@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from gluon_kube.cli import main
+from gluon_kube.cli import main, resource_name
 
 
 def test_version_prints_the_package_version(capsys: pytest.CaptureFixture[str]) -> None:
@@ -122,3 +122,20 @@ def test_template_refuses_unsupported_constructs_with_exit_2(
     assert main(["template", "r", str(root)]) == 2
     err = capsys.readouterr().err
     assert err.startswith("gluon-kube: error: c/templates/cm.yaml: line 3: 'include'")
+
+
+@pytest.mark.parametrize(
+    ("kind", "name", "line"),
+    [
+        ("Deployment", "user-postgres", "deployment.apps/user-postgres"),
+        ("Job", "register", "job.batch/register"),
+        ("CronJob", "cleanup", "cronjob.batch/cleanup"),
+        ("Service", "kafka", "service/kafka"),
+        ("ConfigMap", "c", "configmap/c"),
+        ("Namespace", "gluon-local", "namespace/gluon-local"),
+        ("Pod", "p-1", "pod/p-1"),
+    ],
+)
+def test_output_name_is_kubectls(kind: str, name: str, line: str) -> None:
+    """`get <kind> -o name`, as gluon bin/reset-data reads deployments (Stage B, B5)."""
+    assert resource_name(kind, name) == line
