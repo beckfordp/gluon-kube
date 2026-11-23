@@ -6,3 +6,4 @@ kubectl: Client Version: v1.33.1
 kubectl context: orbstack
 docker server: 29.8.2
 os: Darwin arm64
+redis:7-alpine (inspect, etc/passwd, etc/group, docker-entrypoint.sh) added 2026-11-23 by hand with the script's own commands (gluon all-Rust Stage B, B4); docker server 29.8.2, Darwin arm64

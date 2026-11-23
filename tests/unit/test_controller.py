@@ -187,7 +187,7 @@ def test_the_container_gets_the_images_command_and_kubernetes_env(cluster: Clust
 def test_an_image_without_a_recipe_is_image_unavailable_and_never_started(
     cluster: Cluster, runtime: FakeRuntime, clock: Clock
 ) -> None:
-    cluster.apply(load(deployment(image="redis:7-alpine") + "---\n" + SERVICE))
+    cluster.apply(load(deployment(image="apicurio/apicurio-registry:3.3.2") + "---\n" + SERVICE))
     ticks(cluster, clock, 2)
     pod = only_pod(cluster)
     assert pod_status(pod) == "ImageUnavailable"

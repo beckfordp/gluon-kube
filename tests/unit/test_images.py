@@ -41,7 +41,9 @@ def tools(tmp_path: Path) -> HostTools:
     return HostTools(pg_bin=pg_bin, uid=1000, gid=1000, home=tmp_path, cache=tmp_path / "cache")
 
 
-@pytest.mark.parametrize(("recipe", "capture"), [("postgres", "postgres_16-alpine")])
+@pytest.mark.parametrize(
+    ("recipe", "capture"), [("postgres", "postgres_16-alpine"), ("redis", "redis_7-alpine")]
+)
 def test_captured_configs_are_the_images(recipe: str, capture: str) -> None:
     assert captured(recipe) == inspect(capture)
 
@@ -52,6 +54,9 @@ def test_captured_configs_are_the_images(recipe: str, capture: str) -> None:
         ("postgres/docker-entrypoint.sh", "postgres_16-alpine.docker-entrypoint.sh"),
         ("postgres/passwd", "postgres_16-alpine_etc_passwd"),
         ("postgres/group", "postgres_16-alpine_etc_group"),
+        ("redis/docker-entrypoint.sh", "redis_7-alpine.docker-entrypoint.sh"),
+        ("redis/passwd", "redis_7-alpine_etc_passwd"),
+        ("redis/group", "redis_7-alpine_etc_group"),
     ],
 )
 def test_packaged_files_are_the_captured_ones(packaged: str, capture: str) -> None:
@@ -88,8 +93,9 @@ def test_no_postgres_binaries_no_recipe() -> None:
 
 
 def test_unknown_images_are_unavailable() -> None:
-    result = recipe_for("redis:7-alpine", HostTools())
-    assert result == Unavailable("redis:7-alpine", "no gluon-kube recipe for redis:7-alpine")
+    image = "apicurio/apicurio-registry:3.3.2"
+    result = recipe_for(image, HostTools())
+    assert result == Unavailable(image, f"no gluon-kube recipe for {image}")
     assert "postgres:16-alpine" in recipes()
 
 
@@ -254,3 +260,48 @@ def test_an_unbuilt_rust_port_is_unavailable_saying_how_to_build(tmp_path: Path)
     assert "gluon-kube build demo-rs" in result.reason
     assert isinstance(recipe_for("missing-rs:latest", tools), Unavailable)
     assert isinstance(recipe_for("demo-rs:latest", HostTools()), Unavailable)
+
+
+def test_redis_runs_the_images_entrypoint_on_the_sandboxs_server(tmp_path: Path) -> None:
+    redis_bin = tmp_path / "bin"
+    tools = HostTools(redis_bin=redis_bin)
+    recipe = recipe_for("redis:7-alpine", tools)
+    assert isinstance(recipe, Recipe)
+    assert (recipe.uid, recipe.gid) == (999, 1000)
+    assert recipe.config.entrypoint == ("docker-entrypoint.sh",)
+    assert recipe.config.working_dir == "/data"
+    assert recipe.config.cmd == ("redis-server", "--protected-mode", "no")
+    sources = {m.target: m.source for m in recipe.mounts if isinstance(m, Bind)}
+    assert sources["/usr/local/bin/docker-entrypoint.sh"] == PACKAGE / "redis" / (
+        "docker-entrypoint.sh"
+    )
+    assert sources["/etc/passwd"] == PACKAGE / "redis" / "passwd"
+    assert "/data" in {m.target for m in recipe.mounts if isinstance(m, Tmpfs)}
+    assert recipe.image_env()["PATH"].startswith(f"{redis_bin}:")
+    assert any("protected-mode" in d for d in recipe.differences)
+
+
+def test_no_redis_server_no_redis_recipe() -> None:
+    result = recipe_for("redis:7-alpine", HostTools())
+    assert isinstance(result, Unavailable)
+    assert "redis-server" in result.reason
+
+
+def test_a_rust_ports_workdir_exists_when_nothing_is_copied_into_it(tmp_path: Path) -> None:
+    service = tmp_path / "gluon" / "services" / "bare-rs"
+    (service / "target" / "release").mkdir(parents=True)
+    (service / "target" / "release" / "bare").write_text("binary")
+    (service / "Dockerfile").write_text(
+        "FROM rust AS build\nRUN cargo build --release\nFROM debian:bookworm-slim\n"
+        "COPY --from=build /src/services/bare-rs/target/release/bare /usr/local/bin/bare\n"
+        'WORKDIR /app\nUSER 65532:65532\nENTRYPOINT ["/usr/local/bin/bare"]\n'
+    )
+    recipe = recipe_for("bare-rs:latest", HostTools(gluon=tmp_path / "gluon"))
+    assert isinstance(recipe, Recipe)
+    assert "/app" in {m.target for m in recipe.mounts if isinstance(m, Tmpfs)}
+
+
+def test_a_rust_ports_workdir_is_mounted_once_beside_its_copies(tmp_path: Path) -> None:
+    recipe = recipe_for("demo-rs:latest", rust_port(tmp_path, built=True))
+    assert isinstance(recipe, Recipe)
+    assert [m.target for m in recipe.mounts].count("/app") == 1

@@ -19,7 +19,7 @@ import json
 import os
 import shutil
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -116,6 +116,9 @@ class HostTools:
     """Where the sandbox has what recipes use (found once, at node start)."""
 
     pg_bin: Path | None = None
+    redis_bin: Path | None = None
+    """Where `redis-server` is on the PATH (gluon bin/sandbox-setup's `redis` step: the
+    image's, or its wrappers over unpacked .debs)."""
     java_home: Path | None = None
     cdc_home: Path | None = None
     ca_bundle: Path | None = None
@@ -136,6 +139,7 @@ class HostTools:
         """From the sandbox: PostgreSQL's bin directory (pg_ctl's), Java's home (java's),
         the CDC jars (~/.local/<CDC_DIR_NAME>, or GLUON_KUBE_CDC_HOME)."""
         pg_ctl = shutil.which("pg_ctl")
+        redis_server = shutil.which("redis-server")
         java = shutil.which("java")
         cdc = Path(os.environ.get("GLUON_KUBE_CDC_HOME", Path.home() / ".local" / CDC_DIR_NAME))
         bundle = Path("/etc/ssl/certs/ca-certificates.crt")
@@ -143,6 +147,7 @@ class HostTools:
             gluon=gluon_root(),
             ca_bundle=bundle if bundle.is_file() else None,
             pg_bin=Path(pg_ctl).resolve().parent if pg_ctl else None,
+            redis_bin=Path(redis_server).parent if redis_server else None,
             java_home=Path(java).resolve().parents[1] if java else None,
             cdc_home=cdc if (cdc / "COMPLETE").exists() else None,
             uid=os.getuid(),
@@ -228,6 +233,40 @@ def postgres(image: str, tools: HostTools) -> Recipe | Unavailable:
             "postgresql.conf.sample is the sandbox's, patched as the image's (listen on all "
             "addresses; sockets in /var/run/postgresql)",
             "the sandbox's bash, coreutils and findutils, not Alpine's",
+        ),
+    )
+
+
+def redis(image: str, tools: HostTools) -> Recipe | Unavailable:
+    """`redis:7-alpine` (cart, catalog and order's Redis; gluon all-Rust Stage B, B4): the
+    image's own docker-entrypoint.sh, run by the sandbox's `redis-server`, as the image's
+    redis user, in /data."""
+    if tools.redis_bin is None:
+        return Unavailable(image, "no redis-server in the sandbox (gluon bin/sandbox-setup)")
+    files = PACKAGE / "redis"
+    uid, gid, home = account(files / "passwd", "redis")
+    config = captured("redis")
+    return Recipe(
+        image=image,
+        config=replace(config, cmd=(*config.cmd, "--protected-mode", "no")),
+        uid=uid,
+        gid=gid,
+        home=home,
+        mounts=(
+            Bind(files / "docker-entrypoint.sh", "/usr/local/bin/docker-entrypoint.sh"),
+            Bind(files / "passwd", "/etc/passwd"),
+            Bind(files / "group", "/etc/group"),
+            Tmpfs("/data"),
+        ),
+        path_prepend=(str(tools.redis_bin),),
+        differences=(
+            f"redis-server from {tools.redis_bin} (the sandbox's, Ubuntu's 7.0), not the "
+            "image's 7.4",
+            "`--protected-mode no` added to the command: the image's build compiles protected "
+            "mode off, Ubuntu's leaves it on (connections from other pods would be refused)",
+            "starts as redis (uid 999), not as root dropping to redis with setpriv: one uid "
+            "per user namespace (so `exec` runs as redis too)",
+            "the sandbox's sh and coreutils, not Alpine's",
         ),
     )
 
@@ -418,6 +457,9 @@ def rust_service(image: str, tools: HostTools) -> Recipe | Unavailable:
                 return Unavailable(image, f"not built: {host_path} (gluon-kube build {name})")
             mounts.append(Bind(host_path, copy.dest))
     config = dockerfile.config()
+    if config.working_dir != "/" and config.working_dir not in {m.target for m in mounts}:
+        # Docker creates the WORKDIR (/app, with nothing copied into it for most ports).
+        mounts.append(Tmpfs(config.working_dir))
     user = (config.user or "0").split(":")
     uid = int(user[0]) if user[0].isdigit() else 0
     gid = int(user[1]) if len(user) > 1 and user[1].isdigit() else uid
@@ -433,12 +475,14 @@ def rust_service(image: str, tools: HostTools) -> Recipe | Unavailable:
             f"(services/{name}/Dockerfile read for its config and copies)",
             "the sandbox's root (Ubuntu), not debian:bookworm-slim's; /etc/passwd and "
             "/etc/group are the image's",
+            "the WORKDIR is an empty tmpfs (writable), where Docker makes a directory",
         ),
     )
 
 
 RECIPES = {
     "postgres:16-alpine": postgres,
+    "redis:7-alpine": redis,
     "apache/kafka:3.8.0": kafka,
     "debezium/connect:3.0.0.Final": connect,
     "curlimages/curl:8.10.1": curl,

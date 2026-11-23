@@ -22,6 +22,7 @@ import threading
 import time
 import traceback
 from collections.abc import Callable, Mapping, Sequence
+from dataclasses import replace
 from io import BufferedIOBase
 from pathlib import Path
 from typing import BinaryIO
@@ -441,20 +442,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     network = Network()
     runtime = NodeRuntime(state, network)
     uid, gid = host_ids()
-    discovered = HostTools.discover()
-    tools = HostTools(
-        pg_bin=discovered.pg_bin,
-        ca_bundle=discovered.ca_bundle,
-        java_home=discovered.java_home,
-        cdc_home=discovered.cdc_home,
-        uid=uid,
-        gid=gid,
-        home=discovered.home,
-        gluon=discovered.gluon,
-        path=discovered.path,
-        cache=state / "images",
-        state=state,
-    )
+    # Everything discovered (a new tool can't be dropped here), with the node's own ids.
+    tools = replace(HostTools.discover(), uid=uid, gid=gid, cache=state / "images", state=state)
     cluster = Cluster(runtime, state, time.monotonic, tools, args.backoff_base)
     stopping = threading.Event()
     node = Node(cluster, stopping.set)

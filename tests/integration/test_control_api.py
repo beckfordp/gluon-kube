@@ -210,7 +210,7 @@ def fake_gluon(tmp_path: Path) -> Path:
         "apiVersion: v1\nkind: Namespace\nmetadata: {name: gluon-local}\n"
     )
     (infra / "postgres-user.yaml").write_text(POSTGRES_USER.read_text())
-    (infra / "user-switch-reset.sql").write_text("select 1;\n")
+    (infra / "switch-reset.sql").write_text("select 1;\n")
     shutil.copytree(GLUON / "infra" / "k8s" / "gluon", root / "infra" / "k8s" / "gluon")
     local = root / "environments" / "local"
     local.mkdir(parents=True)
@@ -250,6 +250,9 @@ def test_up_runs_k8s_local_ups_sequence(
         "== Deploying user-service (helm release) ==",
         'Release "user-service" does not exist. Installing it now.',
         'deployment "user-service" successfully rolled out',
+        "== Registering Debezium outbox connectors after the migrations (up to 2m) ==",
+        "== Waiting for every outbox connector to be RUNNING (up to 2m) ==",
+        "== Done. Check status with: gluon-kube get pods ==",
     ):
         assert heading in out, out
     assert "connector registration didn't complete" in out  # no Job in this tree

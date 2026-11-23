@@ -187,12 +187,28 @@ def test_a_killed_container_restarts_in_the_same_pod(cluster: Path) -> None:
     assert again.stdout.strip() == "1"
 
 
-def test_an_image_with_no_recipe_is_image_unavailable(cluster: Path) -> None:
-    gk("apply", "-f", str(LOCAL_INFRA / "redis-cart.yaml"))
+def test_an_image_with_no_recipe_is_image_unavailable(cluster: Path, tmp_path: Path) -> None:
+    manifest = tmp_path / "no-recipe.yaml"
+    manifest.write_text(
+        (LOCAL_INFRA / "redis-cart.yaml")
+        .read_text()
+        .replace("redis:7-alpine", "apicurio/apicurio-registry:3.3.2")
+    )
+    gk("apply", "-f", str(manifest))
     until(lambda: pods()[pod_of("cart-redis")][1] == "ImageUnavailable", "ImageUnavailable")
     assert "<none>" in gk("get", "svc", "cart-redis").stdout
     refused = gk("run", "--", "sh", "-c", "exec 3<>/dev/tcp/cart-redis/6379", check=False)
     assert refused.returncode != 0
+    gk("delete", "-f", str(manifest))
+
+
+@pytest.mark.skipif(shutil.which("redis-server") is None, reason="needs redis-server")
+def test_redis_from_gluon_locals_manifest_answers_by_its_service_name(cluster: Path) -> None:
+    gk("apply", "-f", str(LOCAL_INFRA / "redis-cart.yaml"))
+    until(lambda: pods()[pod_of("cart-redis")][1] == "Running", "Running")
+    until(lambda: pods()[pod_of("cart-redis")][0] == "1/1", "Ready (redis-cli ping)")
+    answer = gk("run", "--", "redis-cli", "-h", "cart-redis", "ping")
+    assert answer.stdout.strip() == "PONG"
     gk("delete", "-f", str(LOCAL_INFRA / "redis-cart.yaml"))
 
 

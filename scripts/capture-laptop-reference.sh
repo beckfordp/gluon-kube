@@ -68,7 +68,7 @@ echo "helm template example infra/k8s/gluon --namespace $NS" >> "$OUT/helm-templ
 
 echo "== images"
 for image in postgres:16-alpine apache/kafka:3.8.0 debezium/connect:3.0.0.Final \
-  curlimages/curl:8.10.1 curlimages/curl:8.11.1 user-service-rs:latest; do
+  curlimages/curl:8.10.1 curlimages/curl:8.11.1 redis:7-alpine user-service-rs:latest; do
   safe="$(echo "$image" | tr '/:' '__')"
   echo "  $image"
   if ! docker image inspect "$image" > /dev/null 2>&1; then
@@ -83,6 +83,8 @@ done
 # The entrypoint scripts each recipe re-creates.
 try "postgres entrypoint" "$OUT/images/postgres_16-alpine.docker-entrypoint.sh" \
   docker run --rm --entrypoint cat postgres:16-alpine /usr/local/bin/docker-entrypoint.sh
+try "redis entrypoint" "$OUT/images/redis_7-alpine.docker-entrypoint.sh" \
+  docker run --rm --entrypoint cat redis:7-alpine /usr/local/bin/docker-entrypoint.sh
 try "kafka /etc/kafka/docker" "$OUT/images/apache_kafka_3.8.0.etc-kafka-docker.tar" \
   docker run --rm --entrypoint tar apache/kafka:3.8.0 -C /etc/kafka/docker -cf - .
 try "kafka /opt/kafka/config" "$OUT/images/apache_kafka_3.8.0.opt-kafka-config.tar" \

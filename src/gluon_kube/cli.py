@@ -171,7 +171,9 @@ def parser() -> argparse.ArgumentParser:
     build = commands.add_parser("build", help="build a Rust port's image parts (its Dockerfile)")
     build.add_argument("service", help="e.g. user-service-rs")
 
-    up = commands.add_parser("up", help="bin/k8s-local-up's sequence (USER_SERVICE_IMPL)")
+    up = commands.add_parser(
+        "up", help="bin/k8s-local-up's sequence (<SERVICE>_IMPL, default rust)"
+    )
     up.add_argument("services", nargs="*")
 
     rollout = commands.add_parser("rollout", help="restart a Deployment, or wait for its rollout")
