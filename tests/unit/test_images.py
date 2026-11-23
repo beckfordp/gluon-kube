@@ -305,3 +305,18 @@ def test_a_rust_ports_workdir_is_mounted_once_beside_its_copies(tmp_path: Path) 
     recipe = recipe_for("demo-rs:latest", rust_port(tmp_path, built=True))
     assert isinstance(recipe, Recipe)
     assert [m.target for m in recipe.mounts].count("/app") == 1
+
+
+@pytest.mark.parametrize(
+    ("script", "main_class"),
+    [
+        ("kafka-topics.sh", "org.apache.kafka.tools.TopicCommand"),
+        ("kafka-get-offsets.sh", "org.apache.kafka.tools.GetOffsetShell"),
+        ("kafka-delete-records.sh", "org.apache.kafka.tools.DeleteRecordsCommand"),
+    ],
+)
+def test_the_kafka_tools_gluons_reset_data_runs_are_launched(script: str, main_class: str) -> None:
+    """gluon bin/reset-data purges topics with these in the kafka pod (all-Rust B6)."""
+    launcher = PACKAGE / "kafka-bin" / script
+    assert launcher.stat().st_mode & 0o111
+    assert f'kafka-run-class.sh" {main_class} "$@"' in launcher.read_text(encoding="utf-8")
