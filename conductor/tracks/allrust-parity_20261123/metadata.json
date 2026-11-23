@@ -1,7 +1,7 @@
 {
   "track_id": "allrust-parity_20261123",
   "type": "feature",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-11-23T13:05:00Z",
   "updated_at": "2026-11-23T13:05:00Z",
   "description": "all-Rust parity with bin/k8s-local-up (gluon Stage B, B4): redis:7-alpine recipe, <SERVICE>_IMPL for every service and ALL_RUST, a Rust port's WORKDIR, up waits for infra, switch reset for any service, connectors registered after the services and RUNNING"

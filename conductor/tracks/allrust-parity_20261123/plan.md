@@ -15,7 +15,7 @@
 - [x] Task: CI green (Linux container) `d11e979`: 281 passed, 5 skipped (CDC jars, a built port), 90.66%
 - [x] Task: `get <kind> -o name` as kubectl (`deployment.apps/x`): gluon bin/reset-data reads it (B5); test red (import), then green `0bb4ec0`
 - [x] Task: `kafka-get-offsets.sh`, `kafka-delete-records.sh` launchers: gluon bin/reset-data purges topics with them (B6, found in the bed); test red (2), green, run in the bed's kafka pod `e430986`
-- [ ] Task: in the arm64 bed: all eight ports up (gluon B6)
+- [x] Task: in the arm64 bed: all eight ports up (gluon B6): from a clean bed, `gkube up` 9m11s, the original suite 53/53, ledger OK (gluon `fc5b513`, docs/ports/evidence/all-rust-bed/)
 
 ## Notes
 - Red seen: the new unit tests (8 in test_images, test_up not importable); the Redis
@@ -25,3 +25,8 @@
   redis-server and cargo installed for the run (the fake port's build is `cargo --version`).
 - Decision: the default implementation here is rust for every service (bin/k8s-local-up:
   scala unless ALL_RUST=1); the Scala services can't be built in the sandbox (ADR 0028).
+
+## Review
+- /conductor:review (prompting off): every task met; CI in a Linux arm64 container from
+  the bed image 291 passed, 5 skipped (CDC jars, a built port); ruff, mypy clean. Waits
+  are bounded (no timing assertions); subprocesses take argv lists. No findings.
