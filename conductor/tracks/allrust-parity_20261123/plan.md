@@ -13,6 +13,7 @@
 - [x] Task: switch reset for any service (switch-reset.sql); connector restarted `d11e979`
 - [x] Task: connectors registered after the services, every one RUNNING; tests red, then green `d11e979`
 - [x] Task: CI green (Linux container) `d11e979`: 281 passed, 5 skipped (CDC jars, a built port), 90.66%
+- [x] Task: `get <kind> -o name` as kubectl (`deployment.apps/x`): gluon bin/reset-data reads it (B5); test red (import), then green `0bb4ec0`
 - [ ] Task: in the arm64 bed: all eight ports up (gluon B6)
 
 ## Notes
