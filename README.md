@@ -33,8 +33,8 @@ gkube cluster start                    # the simulated cluster (state: /tmp/gluo
 gkube up user-service                  # shared infra, then user-service-rs built and deployed
                                        #   (~3 min; ~6 min after bin/sandbox-save, which
                                        #   removes the Rust build output)
-gkube get pods                         # everything with a recipe Running; Redis and
-                                       #   Apicurio ImageUnavailable (no recipe)
+gkube get pods                         # everything with a recipe Running; Apicurio
+                                       #   ImageUnavailable (no recipe)
 gkube proxy &                          # the cluster's names on the sandbox: an HTTP proxy
                                        #   on 127.0.0.1:3128
 taiga-browser --proxy-server=http://127.0.0.1:3128 --new-window \
@@ -106,7 +106,8 @@ Every verb, as kubectl's and helm's (`-n gluon-local` accepted; `gluon-kube` or 
 
 ```
 gluon-kube cluster start|stop|status
-gluon-kube up [SERVICE ...]                   # bin/k8s-local-up's sequence (USER_SERVICE_IMPL)
+gluon-kube up [SERVICE ...]                   # bin/k8s-local-up's sequence (<SERVICE>_IMPL,
+                                              #   rust by default; no SERVICE: all eight)
 gluon-kube get pods|deploy|svc|jobs [NAME] [-o wide|name]
 gluon-kube logs deploy/kafka-connect -c fetch-jmx-exporter [--previous] [--tail N]
 gluon-kube exec [-i] deploy/user-postgres -- psql -U user user
