@@ -1,7 +1,7 @@
 {
   "track_id": "deployed-connectors_20261123",
   "type": "bug",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-11-23T14:00:00Z",
   "updated_at": "2026-11-23T14:00:00Z",
   "description": "up waits for the connectors of deployed services only (gluon all-Rust B7)"
