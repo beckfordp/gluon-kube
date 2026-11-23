@@ -157,6 +157,22 @@ def connector_state(code: int, body: str) -> str:
     return next((str(state) for state in states if state != "RUNNING"), "RUNNING")
 
 
+def deployed_connectors(
+    names: Sequence[str], objects: Sequence[Sequence[str]]
+) -> tuple[list[str], list[str]]:
+    """The connectors to wait for, and those not: `<short>-outbox-connector` only when
+    Deployment `<short>-service` exists (a service not deployed has no outbox table, so its
+    connector can't run); any other connector is waited for."""
+    deployed = {name for kind, name in objects if kind == "Deployment"}
+    watched: list[str] = []
+    skipped: list[str] = []
+    for name in names:
+        short = name.removesuffix("-outbox-connector")
+        waits = short == name or f"{short}-service" in deployed
+        (watched if waits else skipped).append(name)
+    return watched, skipped
+
+
 def ensure_connectors(
     names: Sequence[str],
     state_of: Callable[[str], str],
@@ -417,8 +433,13 @@ def up(services: Sequence[str], gluon: Path) -> int:
     else:
         warn(f"no {register}: no connectors to register")
 
-    step("Waiting for every outbox connector to be RUNNING (up to 2m)")
-    pending = ensure_connectors(names, connector_status, restart_connector, CONNECTORS_TIMEOUT_S)
+    step("Waiting for every deployed service's outbox connector to be RUNNING (up to 2m)")
+    objects = client.request("objects")["objects"]
+    assert isinstance(objects, list)
+    watched, skipped = deployed_connectors(names, objects)
+    if skipped:
+        print(f"not waited for (service not deployed): {' '.join(skipped)}")
+    pending = ensure_connectors(watched, connector_status, restart_connector, CONNECTORS_TIMEOUT_S)
     if pending:
         print(f"FAIL: connectors not RUNNING: {' '.join(pending)}", file=sys.stderr)
         print("see 'gluon-kube logs deploy/kafka-connect'", file=sys.stderr)

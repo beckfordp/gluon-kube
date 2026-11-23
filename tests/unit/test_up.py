@@ -16,6 +16,7 @@ from gluon_kube.up import (
     choices,
     connector_names,
     connector_state,
+    deployed_connectors,
     ensure_connectors,
     impl_of,
     infra_pending,
@@ -171,3 +172,13 @@ def test_connectors_not_running_by_the_deadline_are_returned() -> None:
         sleep=sleep,
     )
     assert pending == ["b:MISSING"]
+
+
+def test_only_deployed_services_connectors_are_waited_for() -> None:
+    """A service not deployed has no outbox table: its connector can't run (B7)."""
+    objects = [["Deployment", "cart-service"], ["Deployment", "order-service"], ["Job", "x"]]
+    names = ["order-outbox-connector", "user-outbox-connector", "audit-connector"]
+    assert deployed_connectors(names, objects) == (
+        ["order-outbox-connector", "audit-connector"],
+        ["user-outbox-connector"],
+    )

@@ -251,7 +251,7 @@ def test_up_runs_k8s_local_ups_sequence(
         'Release "user-service" does not exist. Installing it now.',
         'deployment "user-service" successfully rolled out',
         "== Registering Debezium outbox connectors after the migrations (up to 2m) ==",
-        "== Waiting for every outbox connector to be RUNNING (up to 2m) ==",
+        "== Waiting for every deployed service's outbox connector to be RUNNING (up to 2m) ==",
         "== Done. Check status with: gluon-kube get pods ==",
     ):
         assert heading in out, out
